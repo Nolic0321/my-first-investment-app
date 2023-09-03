@@ -5,8 +5,6 @@ import Root from "./pages/Root.tsx";
 import {RootRoute, Route, Router, RouterProvider} from "@tanstack/router";
 import Index from "./pages/Index.tsx";
 import MySavings from "./pages/MySavings.tsx";
-import {DevSupport} from "@react-buddy/ide-toolbox";
-import {ComponentPreviews, useInitial} from "./dev";
 
 const rootRoute = new RootRoute({
 	component: Root,
@@ -37,11 +35,7 @@ if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<React.StrictMode>
-			<DevSupport ComponentPreviews={ComponentPreviews}
-						useInitialHook={useInitial}
-			>
 				<RouterProvider router={router}/>
-			</DevSupport>
-		</React.StrictMode>,
+		</React.StrictMode>
 	);
 }

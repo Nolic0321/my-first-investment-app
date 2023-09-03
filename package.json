@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@react-buddy/ide-toolbox": "^2.4.0",
     "@tanstack/router": "^0.0.1-beta.108",
     "@tanstack/router-devtools": "^0.0.1-beta.108",
     "firebase-admin": "^11.10.1",

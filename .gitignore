@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 ./serverless-functions
 /serverless-functions/
+
+.vercel
