@@ -35,7 +35,9 @@ if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<React.StrictMode>
+			<div className={'flex flex-col align-middle w-full'}>
 				<RouterProvider router={router}/>
+			</div>
 		</React.StrictMode>
 	);
 }
