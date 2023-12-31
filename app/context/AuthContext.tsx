@@ -1,6 +1,6 @@
 'use client'
 import React, {createContext, useState, ReactNode, useContext} from "react";
-import { getMockUser } from '../models/mockData';
+import { getMockUser } from '../models/mockClient';
 
 export interface LoginData{
 	username: string,

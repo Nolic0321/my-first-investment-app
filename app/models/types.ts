@@ -1,10 +1,15 @@
 // types.ts
 
-export interface User {
+export type User = {
 	id: string;
 	username: string;
 	password: string; // In a real app, passwords should be hashed and not stored as plain text
 	displayName: string;
-	parentId?: string;
-	balance?: number;
+}
+
+export type Parent = User;
+
+export type Child = User & {
+	parentId: string;
+	balance: number;
 }
