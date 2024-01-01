@@ -2,7 +2,6 @@ import React, {useContext, useState} from "react";
 import {Child} from "../models/types";
 import {Dialog} from "@headlessui/react";
 import Button from "../components/Button";
-import Input from "../components/Input";
 import LabelledInput from "../components/Labeled Input";
 import {UserContext} from "../context/UserContext";
 
@@ -12,19 +11,6 @@ interface CreateChildAccountDialogProps {
     onCreateChildAccount: (child: Child) => void;
 }
 
-const customStyles = {
-    content: {
-        padding: '2rem',
-        background: '#000',
-        width: 'auto',
-        height: 'auto',
-        top: '0',
-        left: '0',
-        right: '0',
-        bottom: '0',
-        margin: 'auto',
-    },
-};
 export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> = ({isOpen, onRequestClose, onCreateChildAccount}) => {
     const [displayName, setDisplayName] = useState("");
     const [username, setUsername] = useState("");
