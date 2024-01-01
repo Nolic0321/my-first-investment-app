@@ -20,7 +20,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
 		<AuthProvider>
 			<UserProvider>
 				<Nav/>
-				<div className={"mt-8"}>
+				<div id={"main"} className={"mt-8"}>
 					{children}
 				</div>
 			</UserProvider>
