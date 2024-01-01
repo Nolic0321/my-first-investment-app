@@ -10,7 +10,6 @@ export default function Dashboard() {
 
 	const renderUserStatus = user
 	?	<div>
-			<p>Logged in as {user.displayName}</p>
 			{"balance" in user ? <ChildDashboard/> : <ParentDashboard/>}
 		</div>
 
@@ -21,9 +20,7 @@ export default function Dashboard() {
 
 	return (
 		<div className={"ml-4"}>
-			<h1 className={"mb-4"}>Welcome to the Dashboard</h1>
-
-			{renderUserStatus}
+			{user ? renderUserStatus : <h1 className={"mb-4"}>Welcome to the Dashboard</h1>}
 		</div>
 	);
 }
