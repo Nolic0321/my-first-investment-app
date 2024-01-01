@@ -12,4 +12,5 @@ export type Parent = User;
 export type Child = User & {
 	parentId: string;
 	balance: number;
+	interest: number;
 }
