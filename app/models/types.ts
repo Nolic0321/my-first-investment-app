@@ -13,4 +13,5 @@ export type Child = User & {
 	parentId: string;
 	balance: number;
 	interest: number;
+	pendingRequests: number[]
 }

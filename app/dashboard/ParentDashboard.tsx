@@ -2,7 +2,7 @@ import Button from "../components/Button";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../context/UserContext";
 import {Child} from "../models/types";
-import {addUser, getChildAccounts, deleteChildAccount} from "../models/mockClient";
+import {addUser, getChildAccounts} from "../models/mockClient";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 
 export default function ParentDashboard() {
@@ -15,14 +15,7 @@ export default function ParentDashboard() {
 		setIsDialogOpen(false);
 	};
 
-	const onDeletePressed = (childId: string) => {
-		//TODO: Implement in issue #12
-		deleteChildAccount(childId);
-		let updatedChildAccounts = getChildAccounts(user.id);
-		setChildAccounts(updatedChildAccounts);
-	}
-
-	const user = useContext(UserContext)!;
+	const {user} = useContext(UserContext)!;
 	useEffect(()=>{
 		if (user) {
 			let childAccounts = getChildAccounts(user.id);

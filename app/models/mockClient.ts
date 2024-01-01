@@ -3,7 +3,7 @@ import {LoginData} from "../context/AuthContext";
 
 
 export const mockChildren: Child[] = [
-	{ id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1 of Parent One', parentId:"1", balance: 250, interest: 12 },
+	{ id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1 of Parent One', parentId:"1", balance: 250, interest: 12, pendingRequests:[] },
 ];
 export const mockUsers: User[] = [
 	{ id: "1", username: 'parent1', password: 'pass123', displayName: 'Parent One'},
