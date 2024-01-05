@@ -1,8 +1,11 @@
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../context/UserContext";
-import {Child} from "../models/types";
+import {Child, Transaction} from "../models/types";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import {guid} from "../models/helperFunctions";
+import {ClientContext} from "../context/ClientContext";
+import IClient from "../models/client";
 const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): number => {
 	const dailyInterestRate = yearlyInterestRate / 365;
 	return balance * dailyInterestRate;
@@ -15,6 +18,7 @@ export default function ChildDashboard(){
 	const [pretendSpent, setPretendSpent] = useState("");
 	const [pretendAdded, setPretendAdded] = useState("");
 	const [requestAmount, setRequestAmount] = useState("");
+    const {client} = useContext(ClientContext) as unknown as {client:IClient};
 
 	useEffect(() =>{
 		// Calculate daily earnings
@@ -25,9 +29,15 @@ export default function ChildDashboard(){
 
 	const onRequestSubmit = () => {
 		const updatedUser = {...user};
-		updatedUser.pendingRequests.push(Number(requestAmount));
+        const newRequest : Transaction = {
+            amount: Number(requestAmount),
+            date: new Date(),
+            id: guid()
+        }
+		updatedUser.pendingRequests.push(newRequest);
 		updateUser(updatedUser);
 		// Send request to parent
+        client.sendRequest(user.id,newRequest);
 		// TODO
 		// Reset input
 		setRequestAmount("");
@@ -39,7 +49,7 @@ export default function ChildDashboard(){
                 <br/>
                 <div>
                     {user.pendingRequests?.length > 0
-                        ? <h2>Your current balance is: ${user.balance - user.pendingRequests.reduce((total, amount) => total + amount, 0)} (${user.balance.toFixed(2)})</h2>
+                        ? <h2>Your current balance is: ${user.balance - user.pendingRequests.reduce((total, transaction) => total + transaction.amount, 0)} (${user.balance.toFixed(2)})</h2>
                         : <h2>Your current balance is: ${user.balance.toFixed(2)}</h2>}
 
                     <h2>Your money is earning you ${dailyEarnings.toFixed(2)} today</h2>

@@ -1,6 +1,7 @@
 'use client'
 import React, {createContext, useState, ReactNode, useContext} from "react";
-import { getMockUser } from '../models/mockClient';
+import {ClientContext} from "./ClientContext";
+import IClient from "../models/client";
 
 export interface LoginData{
 	username: string,
@@ -18,10 +19,11 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+	const {client} = useContext(ClientContext) as unknown as {client: IClient};
 	const [userId, setUserId] = useState<string>("");
 
 	const login = (userData: LoginData) => {
-		let mockUser = getMockUser(userData);
+		let mockUser = client.getUser(userData);
 		if(mockUser) {
 			setUserId(mockUser.id);
 			return true;

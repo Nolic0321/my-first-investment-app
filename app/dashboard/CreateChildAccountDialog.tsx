@@ -17,7 +17,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
     const [password, setPassword] = useState("");
     const [startingBalance, setStartingBalance] = useState(0);
     const [interest, setInterest] = useState(0);
-    const user = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const handleOnCreate = () => {
         const child: Child = {
             id: "newid",
@@ -27,6 +27,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
             balance: startingBalance,
             interest,
             parentId: user?.id??"", // This should be set to the current user's id
+            pendingRequests: []
         };
         onCreateChildAccount(child);
     };
