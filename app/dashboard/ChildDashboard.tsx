@@ -18,7 +18,7 @@ export default function ChildDashboard(){
 	const [pretendSpent, setPretendSpent] = useState("");
 	const [pretendAdded, setPretendAdded] = useState("");
 	const [requestAmount, setRequestAmount] = useState("");
-    const {client} = useContext(ClientContext) as unknown as {client:IClient};
+    const client = useContext(ClientContext) as unknown as IClient;
 
 	useEffect(() =>{
 		// Calculate daily earnings

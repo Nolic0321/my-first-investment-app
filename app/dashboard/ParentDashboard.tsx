@@ -8,7 +8,7 @@ import IClient from "../models/client";
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<Child[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const {client} = useContext(UserContext) as unknown as {client:IClient};
+	const client = useContext(UserContext) as unknown as IClient
 
 	const handleCreateChildAccount = (child: Child) => {
 		client.addChildUser(child);

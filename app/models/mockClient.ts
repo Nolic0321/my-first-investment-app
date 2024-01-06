@@ -19,6 +19,10 @@ export default class MockClient implements IClient{
 		const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);
 		return user || null;
 	}
+
+	getUsers(): User[] {
+		return mockUsers;
+	}
 	addChildUser(childData: Child){
 		mockUsers.push(childData);
 		mockChildren.push(childData);

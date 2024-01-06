@@ -14,12 +14,15 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+	console.log(`UserProvider: creating user context`);
 	const { userId } = useContext(AuthContext) || {userId: ""};
 	const [user, setUser] = useState<User | null>(null);
 
 	useEffect(() => {
-		const fetchedUser = userId ? mockUsers.find((user) => user.id === userId) as User : null;
-		setUser(fetchedUser);
+		if (userId) {
+			const fetchedUser = mockUsers.find((user) => user.id === userId) as User;
+			setUser(fetchedUser);
+		}
 	}, [userId]);
 
 	const updateUser = (updatedUser: User) => {
