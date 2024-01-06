@@ -17,7 +17,7 @@ export default function ParentDashboard() {
 		setIsDialogOpen(false);
 	};
 
-	const {user, updateUser} = useContext(UserContext)!;
+	const {user} = useContext(UserContext)!;
 	useEffect(()=>{
 		if (user) {
 			let childAccounts = client.getChildAccounts(user.id);
@@ -31,7 +31,7 @@ export default function ParentDashboard() {
 				child.balance -= request.amount;
 				child.pendingRequests = child.pendingRequests.filter((transaction) => transaction.id !== request.id);
 			}
-			updateUser(child);
+			client.updateUser(child);
 			return child;
 		});
 		setChildAccounts(updatedChildAccounts);

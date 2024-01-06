@@ -21,3 +21,7 @@ export type Transaction = {
 	amount: number;
 	date: Date;
 }
+
+export type Option = {
+	error: string;
+}

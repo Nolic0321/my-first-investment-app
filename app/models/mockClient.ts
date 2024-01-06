@@ -1,4 +1,4 @@
-import {User, Child, Transaction} from './types';
+import {User, Child, Transaction, Option} from './types';
 import IClient from './client';
 import {LoginData} from "../context/AuthContext";
 
@@ -40,11 +40,22 @@ export default class MockClient implements IClient{
 		mockUsers.splice(userIndex, 1);
 	}
 
-	sendRequest(childId:string, newRequest: Transaction){
-		const child = mockChildren.find(child => child.id === childId);
-		if(child){
-			child.pendingRequests.push(newRequest);
-		}
+	sendRequest(childId:string, newRequest: Transaction, options?:Option): Promise<Child>{
+		return new Promise((resolve, reject) => {
+			if(options?.error) reject(new Error(options.error));
+			const child = mockChildren.find(child => child.id === childId);
+			if (child) {
+				child.pendingRequests.push(newRequest);
+				resolve(child);
+			}else{
+				reject(new Error('Child not found'))
+			}
+		});
+	}
+
+	updateUser(user: User) {
+		const userIndex = mockUsers.findIndex(u => u.id === user.id);
+		mockUsers[userIndex] = user;
 	}
 }
 
