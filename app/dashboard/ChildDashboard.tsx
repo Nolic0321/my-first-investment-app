@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import {guid} from "../models/helperFunctions";
 import {ClientContext} from "../context/ClientContext";
 import IClient from "../models/client";
+import LabelledInput from "../components/Labeled Input";
 const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): number => {
 	const dailyInterestRate = yearlyInterestRate / 365;
 	return balance * dailyInterestRate;
@@ -13,11 +14,13 @@ const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): nu
 
 export default function ChildDashboard(){
     const userContext = useContext(UserContext);
-	const {user, updateUser} = userContext as unknown as {user: Child, updateUser: (updatedUser: Child) => void};
+	const {user} = userContext as unknown as {user: Child, updateUser: (updatedUser: Child) => void};
 	const [dailyEarnings, setDailyEarnings] = useState(0);
 	const [pretendSpent, setPretendSpent] = useState("");
 	const [pretendAdded, setPretendAdded] = useState("");
 	const [requestAmount, setRequestAmount] = useState("");
+    const [requestReason, setRequestReason] = useState("");
+    const [pendingRequests, setPendingRequests] = useState<Transaction[]>([]);
     const [error, setError] = useState<string>("");
     const client = useContext(ClientContext) as unknown as IClient;
 
@@ -28,21 +31,37 @@ export default function ChildDashboard(){
 		setDailyEarnings(earnings);
 	}, [user.balance, user.interest]);
 
+    useEffect(() => {
+        const fetchPendingRequests = async () => {
+            try {
+                const requests = await client.getPendingRequests(user.id);
+                setPendingRequests(requests);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchPendingRequests();
+    }, [client, user.id]);
+
 	const onRequestSubmit = async () => {
         const newRequest : Transaction = {
             amount: Number(requestAmount),
             date: new Date(),
-            id: guid()
+            id: guid(),
+            childId: user.id,
+            reason: requestReason
         }
 		// Send request to backend
         try{
-            let updatedUser = await client.sendRequest(user.id,newRequest, (newRequest.amount < 0)?{error: "Cannot have negative"} as Option:undefined);
-            updateUser(updatedUser);
+            let updatedRequests = await client.sendRequest(newRequest, (newRequest.amount < 0)?{error: "Cannot have negative"} as Option:undefined);
+            setPendingRequests(updatedRequests);
         } catch(error: any){
             setError(error.message);
         }
 
 		setRequestAmount("");
+        setRequestReason("");
 	};
     if(user) {
         return (
@@ -50,8 +69,8 @@ export default function ChildDashboard(){
                 <h1>Hello {user.displayName}</h1>
                 <br/>
                 <div>
-                    {user.pendingRequests?.length > 0
-                        ? <h2>Your current balance is: ${user.balance - user.pendingRequests.reduce((total, transaction) => total + transaction.amount, 0)} (${user.balance.toFixed(2)})</h2>
+                    {pendingRequests?.length > 0
+                        ? <h2>Your current balance is: ${user.balance - pendingRequests.reduce((total, transaction) => total + transaction.amount, 0)} (${user.balance.toFixed(2)})</h2>
                         : <h2>Your current balance is: ${user.balance.toFixed(2)}</h2>}
 
                     <h2>Your money is earning you ${dailyEarnings.toFixed(2)} today</h2>
@@ -71,14 +90,13 @@ export default function ChildDashboard(){
                         ${calculateDailyEarnings(user.balance + Number(pretendAdded), user.interest / 100).toFixed(2)}
                     </div>
                 </div>
-                <div className={'flex flex-col'}>
+                <div className={'flex flex-col xl:w-1/3 sm:w-full'}>
                     <h1>Spend Money Request</h1>
                     <p>If you want to spend some money then enter the amount below and click &quot;Request&quot;. We&apos;ll let your parents know about the request and they can approve it.</p>
                     <div className={'flex-col'}>
-                        <div className={'inline-flex'}>
-                            <Input className={"w-20 mx-1"} inputText={requestAmount.toString()} onInputChanged={setRequestAmount} headerDisplay={"$"}/>
+                            <LabelledInput className={"w-15 mx-1"} label={"I want to spend"} inputText={requestAmount.toString()} onInputChanged={setRequestAmount} headerDisplay={"$"} placeholder={"10"}/>
+                            <LabelledInput className={"mx-1"} label={"I want to spend this money because"} inputText={requestReason} onInputChanged={setRequestReason} placeholder={"I want a new toy"}/>
                             <Button buttonText={'Request'} onButtonPressed={onRequestSubmit} className={'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'}/>
-                        </div>
                         {error && <p className={'text-rose-600'}>{error}</p>}
                     </div>
 

@@ -3,14 +3,23 @@ import {Child, Option, Transaction, User} from "./types";
 import MockClient from "./mockClient";
 
 export default interface IClient {
+    //User CRUD
     getUser(userData: LoginData, options?:Option): User | null;
     getUsers(options?:Option): User[];
-    addChildUser(childData: Child, options?:Option): void;
+    updateUser(child: Child, options?:Option): void;
     addUser(userData: User, options?:Option): void;
+
+    //Child CRUD
+    addChildUser(childData: Child, options?:Option): void;
     getChildAccounts(parentId: string, options?:Option): Child[];
     deleteChildAccount(childId: string, options?:Option): void;
-    sendRequest(childId:string, newRequest: Transaction, options?:Option): Promise<Child>;
-    updateUser(child: Child, options?:Option): void;
+
+    //Transaction CRUD
+    sendRequest(newRequest: Transaction, options?:Option): Promise<Transaction[]>;
+    getPendingRequests(userId: string, options?:Option): Promise<Transaction[]>;
+    approveRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
+    rejectRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
+
 }
 
 export function create(environment: string):IClient{
