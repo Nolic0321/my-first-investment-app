@@ -1,10 +1,13 @@
 'use client'
-import React, {createContext, ReactNode, useContext} from "react";
+import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import { User } from '../models/types';
 import { mockUsers } from '../models/mockClient';
 import {AuthContext} from "./AuthContext";
 
-export const UserContext = createContext<User | null>(null);
+export const UserContext = createContext<{
+	user: User | null;
+	updateUser: (user: User) => void;
+}>({ user: null, updateUser: () => {} });
 
 interface UserProviderProps {
 	children: ReactNode;
@@ -12,10 +15,22 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 	const { userId } = useContext(AuthContext) || {userId: ""};
-	const user = userId ? mockUsers.find((user) => user.id === userId) as User : null;
+	const [user, setUser] = useState<User | null>(null);
 
+	useEffect(() => {
+		if (userId) {
+			const fetchedUser = mockUsers.find((user) => user.id === userId) as User;
+			setUser(fetchedUser);
+		}else{
+			setUser(null);
+		}
+	}, [userId]);
+
+	const updateUser = (updatedUser: User) => {
+		setUser(updatedUser);
+	};
 	return (
-		<UserContext.Provider value={user}>
+		<UserContext.Provider value={{user, updateUser}}>
 			{children}
 		</UserContext.Provider>
 	);

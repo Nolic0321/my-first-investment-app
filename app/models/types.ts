@@ -13,4 +13,15 @@ export type Child = User & {
 	parentId: string;
 	balance: number;
 	interest: number;
+	pendingRequests: Transaction[]
+}
+
+export type Transaction = {
+	id: string;
+	amount: number;
+	date: Date;
+}
+
+export type Option = {
+	error: string;
 }

@@ -1,34 +1,41 @@
 import Button from "../components/Button";
 import {useContext, useEffect, useState} from "react";
-import {UserContext} from "../context/UserContext";
-import {Child} from "../models/types";
-import {addUser, getChildAccounts, deleteChildAccount} from "../models/mockClient";
+import {UserContext, } from "../context/UserContext";
+import {Child, Transaction} from "../models/types";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
+import IClient from "../models/client";
+import {ClientContext} from "../context/ClientContext";
 
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<Child[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const client = useContext(ClientContext) as unknown as IClient
 
 	const handleCreateChildAccount = (child: Child) => {
-		addUser(child);
+		client.addChildUser(child);
 		setChildAccounts([...childAccounts, child]);
 		setIsDialogOpen(false);
 	};
 
-	const onDeletePressed = (childId: string) => {
-		//TODO: Implement in issue #12
-		deleteChildAccount(childId);
-		let updatedChildAccounts = getChildAccounts(user.id);
-		setChildAccounts(updatedChildAccounts);
-	}
-
-	const user = useContext(UserContext)!;
+	const {user} = useContext(UserContext)!;
 	useEffect(()=>{
 		if (user) {
-			let childAccounts = getChildAccounts(user.id);
+			let childAccounts = client.getChildAccounts(user.id);
 			setChildAccounts(childAccounts);
 		}
-	}, [user]);
+	}, [user, client]);
+
+	const updateChildBalance = (childId: string, request: Transaction) => {
+		const updatedChildAccounts = childAccounts.map((child) => {
+			if (child.id === childId) {
+				child.balance -= request.amount;
+				child.pendingRequests = child.pendingRequests.filter((transaction) => transaction.id !== request.id);
+			}
+			client.updateUser(child);
+			return child;
+		});
+		setChildAccounts(updatedChildAccounts);
+	}
 
 	return(
 		<>
@@ -38,6 +45,12 @@ export default function ParentDashboard() {
 				{childAccounts.map((child) => (
 					<div key={child.id} className={'inline-flex'}><div>{child.displayName}</div>
 						{/*<Button buttonText="Delete" className={'ml-4'} onButtonPressed={() => onDeletePressed(child.id)}/> to be implemented in issue #12*/}
+						{child.pendingRequests.map((request:Transaction) => (
+							<div  key={request.id}>
+								<div>Request {request.amount}</div>
+								<Button buttonText="Approve" className={'ml-4'} onButtonPressed={() => updateChildBalance(child.id, request)}/>
+							</div>
+						))}
 					</div>
 				))}
 				<div>
