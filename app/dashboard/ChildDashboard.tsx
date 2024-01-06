@@ -110,7 +110,7 @@ export default function ChildDashboard() {
                 <div className={'prose bg-white px-4 py-5 sm:px-6 text-black rounded-2xl flex flex-col max-w-none'}>
                     <h2 className={'border-b border-gray-200 font-semibold leading-6 text-gray-900 pb-2'}>Spend Money Request</h2>
                     <div className={'flex-col'}>
-                        <LabelledInput className={"w-15 mx-1"} label={"I want to spend"} inputText={requestAmount.toString()} onInputChanged={setRequestAmount} headerDisplay={"$"} placeholder={"10"}/>
+                        <LabelledInput className={"w-15 mx-1"} label={"I want to spend"} inputText={requestAmount.toString()} onInputChanged={setRequestAmount} headerDisplay={"$"} placeholder={"Enter amount"}/>
                         <LabelledInput className={"mx-1 mb-2"} label={"I want to spend this money because"} inputText={requestReason} onInputChanged={setRequestReason}
                                        placeholder={"I want a new toy"}/>
                         <Button buttonText={'Request'} onButtonPressed={onRequestSubmit} className={'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'}/>
