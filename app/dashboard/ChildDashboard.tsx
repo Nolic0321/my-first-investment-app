@@ -89,7 +89,7 @@ export default function ChildDashboard() {
                     <div className={'flex flex-col lg:flex-row'}>
                         <div className={"w-full mb-4"}>
                             <LabelledInput className={'rounded-b-none '} label={"If I spend"} inputText={pretendSpent.toString()} onInputChanged={setPretendSpent} headerDisplay={"$"}
-                                           placeholder={"10"}/>
+                                           placeholder={"Enter amount here"}/>
                             <LabelledInput className={'rounded-none '} label={"then my account will have"} inputText={(user.balance - Number(pretendSpent)).toString()} onInputChanged={() => {
                             }} disabled={true} headerDisplay={"$"}/>
                             <LabelledInput className={'rounded-t-none '} label={"everyday my money would create "}
@@ -98,7 +98,7 @@ export default function ChildDashboard() {
                         </div>
                         <div className={'w-full lg:ml-2'}>
                             <LabelledInput className={'rounded-b-none'} label={"If I save"} inputText={pretendAdded.toString()} onInputChanged={setPretendAdded} headerDisplay={"$"}
-                                           placeholder={"10"}/>
+                                           placeholder={"Enter amount here"}/>
                             <LabelledInput className={'rounded-none'} label={"then my account will have"} inputText={(user.balance + Number(pretendAdded)).toString()} onInputChanged={() => {
                             }} disabled={true} headerDisplay={"$"}/>
                             <LabelledInput className={'rounded-t-none'} label={"everyday my money would create "}
