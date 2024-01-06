@@ -14,7 +14,6 @@ export default interface IClient {
 
 export function create(environment: string):IClient{
     if(environment === "mock"){
-        console.log(`Factory creating mock client`)
         return new MockClient();
     } else {
         throw new Error("Invalid environment");

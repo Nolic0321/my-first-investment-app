@@ -13,7 +13,6 @@ export const mockUsers: User[] = [
 
 export default class MockClient implements IClient{
 	constructor() {
-		console.log('creating mock client');
 	}
 	getUser(userData: LoginData): User | null {
 		const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);

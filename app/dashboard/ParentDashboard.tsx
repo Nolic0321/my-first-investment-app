@@ -4,11 +4,12 @@ import {UserContext, } from "../context/UserContext";
 import {Child, Transaction} from "../models/types";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import IClient from "../models/client";
+import {ClientContext} from "../context/ClientContext";
 
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<Child[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const client = useContext(UserContext) as unknown as IClient
+	const client = useContext(ClientContext) as unknown as IClient
 
 	const handleCreateChildAccount = (child: Child) => {
 		client.addChildUser(child);

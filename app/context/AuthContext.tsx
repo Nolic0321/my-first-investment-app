@@ -10,7 +10,7 @@ export interface LoginData {
 
 export const useAuth = () => useContext(AuthContext);
 export const AuthContext = createContext<{
-    userId: string;
+    userId: string|null;
     login: (userData: LoginData) => boolean;
     logout: () => void;
 } | null>(null);
@@ -20,10 +20,8 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children}) => {
-    console.log(`AuthProvider: creating auth context`);
-	const [userId, setUserId] = useState<string>("");
+	const [userId, setUserId] = useState<string|null>("");
     const clientContext = useContext(ClientContext);
-    console.log(`AuthProvider: clientContext: ${clientContext}`)
     if (!clientContext) {
         return <div>Loading auth...</div>;	//Loader?
     }
@@ -41,7 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
     };
 
     const logout = () => {
-        setUserId("");
+        setUserId(null);
     };
 
     return (
