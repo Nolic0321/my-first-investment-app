@@ -9,6 +9,7 @@ import {ClientContext} from "../context/ClientContext";
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<Child[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
+	const [pendingRequests, setPendingRequests] = useState<Transaction[]>([]);
 	const client = useContext(ClientContext) as unknown as IClient
 
 	const handleCreateChildAccount = (child: Child) => {
@@ -25,16 +26,49 @@ export default function ParentDashboard() {
 		}
 	}, [user, client]);
 
-	const updateChildBalance = (childId: string, request: Transaction) => {
-		const updatedChildAccounts = childAccounts.map((child) => {
-			if (child.id === childId) {
-				child.balance -= request.amount;
-				child.pendingRequests = child.pendingRequests.filter((transaction) => transaction.id !== request.id);
+	useEffect(()=>{
+
+		const fetchPendingRequests = async () => {
+			try {
+				const requests = await client.getPendingRequests(user!.id);
+				setPendingRequests(requests);
+			} catch (error) {
+				console.log(error);
 			}
-			client.updateUser(child);
-			return child;
-		});
-		setChildAccounts(updatedChildAccounts);
+		};
+
+		fetchPendingRequests();
+
+	},[client, user])
+
+	const getPendingRequestsForChild = (childId: string) => {
+		return pendingRequests.filter((request) => request.childId === childId);
+	}
+
+	const onRequestApproval = async (request: Transaction) => {
+		try{
+			await client.approveRequest(request);
+			const updatedChildAccounts = childAccounts.map((child) => {
+				if (child.id === request.childId) {
+					child.balance -= request.amount;
+				}
+				client.updateUser(child);
+				return child;
+			});
+			setChildAccounts(updatedChildAccounts);
+			setPendingRequests(pendingRequests.filter((transaction) => transaction.id !== request.id));
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	const onRequestDenied = async (request: Transaction) => {
+		try{
+			await client.rejectRequest(request);
+			setPendingRequests(pendingRequests.filter((transaction) => transaction.id !== request.id));
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	return(
@@ -43,12 +77,17 @@ export default function ParentDashboard() {
 			<sub>More neat things to come soon!</sub>
 			<div className={"flex flex-col"}>
 				{childAccounts.map((child) => (
-					<div key={child.id} className={'inline-flex'}><div>{child.displayName}</div>
+					<div key={child.id}>
+						<div>{child.displayName}</div>
 						{/*<Button buttonText="Delete" className={'ml-4'} onButtonPressed={() => onDeletePressed(child.id)}/> to be implemented in issue #12*/}
-						{child.pendingRequests.map((request:Transaction) => (
-							<div  key={request.id}>
-								<div>Request {request.amount}</div>
-								<Button buttonText="Approve" className={'ml-4'} onButtonPressed={() => updateChildBalance(child.id, request)}/>
+						{getPendingRequestsForChild(child.id).map((request:Transaction) => (
+							<div  key={request.id} className={'my-4'}>
+								<div>Request ${request.amount}</div>
+								<div>Reason: {request.reason}</div>
+								<div className={'inline-flex'}>
+									<Button buttonText="Approve" onButtonPressed={() => onRequestApproval(request)}/>
+									<Button buttonText={"Deny"} className={"ml-4"}  onButtonPressed={() => onRequestDenied(request)}/>
+								</div>
 							</div>
 						))}
 					</div>
