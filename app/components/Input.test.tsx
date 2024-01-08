@@ -6,3 +6,4 @@ it('should render the component', () => {
    render(<Input onInputChanged={()=>{}} inputText={inputText}/>)
    expect(screen.getByText(inputText)).toBeInTheDocument();
 });
+
