@@ -9,7 +9,7 @@ export type NavLink = {
 	text: string
 }
 export default function Nav() {
-	const user = useContext(UserContext);
+	const {user} = useContext(UserContext);
 	const authContext = useContext(AuthContext)!;
 	const navLinks : NavLink[] = [
 		{href: "/", text: "Home"},

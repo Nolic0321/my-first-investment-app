@@ -1,5 +1,5 @@
 'use client'
-import React, {createContext, useState, ReactNode, useContext} from "react";
+import React, {createContext, useState, ReactNode, useContext, useEffect} from "react";
 import {ClientContext} from "./ClientContext";
 import IClient from "../models/client";
 
@@ -22,6 +22,13 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children}) => {
 	const [userId, setUserId] = useState<string|null>("");
     const clientContext = useContext(ClientContext);
+
+    // Check localStorage for userId
+    useEffect(()=>{
+        const storedUserId = localStorage.getItem("userId");
+        if(storedUserId) setUserId(storedUserId);
+    },[]);
+
     if (!clientContext) {
         return <div>Loading auth...</div>;	//Loader?
     }
@@ -30,9 +37,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
     if(!client) return <div>AuthContext: Loading client...</div>
 
     const login = (userData: LoginData) => {
-        let mockUser = client.getUser(userData);
-        if (mockUser) {
-            setUserId(mockUser.id);
+        let user = client.getUser(userData);
+        if (user) {
+            setUserId(user.id);
+            localStorage.setItem("userId", user.id);
             return true;
         }
         return false;
@@ -40,6 +48,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
 
     const logout = () => {
         setUserId(null);
+        localStorage.removeItem("userId");
     };
 
     return (
