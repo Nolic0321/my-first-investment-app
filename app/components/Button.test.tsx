@@ -3,8 +3,7 @@ import {expect, it} from "@jest/globals";
 import Button from "@components/Button";
 
 it('Should render the button', () => {
-    render(<Button buttonText="Click me" onButtonPressed={() => {
-    }}/>);
+    render(<Button buttonText="Click me" onButtonPressed={() => {}}/>);
     expect(screen.getByText('Click me')).toBeInTheDocument();
 });
 
