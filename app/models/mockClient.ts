@@ -5,7 +5,7 @@ import {LoginData} from "../context/AuthContext";
 
 export const mockChildren: Child[] = [
     {id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1', parentId: "1", balance: 250, interest: 12},
-    {id: "2", username: 'child2', password: 'pass123', displayName: 'Child 2', parentId: "1", balance: 1150, interest: 12},
+    {id: "123", username: 'child2', password: 'pass123', displayName: 'Child 2', parentId: "1", balance: 1150, interest: 12},
 ];
 export const mockUsers: User[] = [
     {id: "1", username: 'parent1', password: 'pass123', displayName: 'Parent One'},
@@ -56,7 +56,7 @@ export default class MockClient implements IClient {
     getPendingRequests(userId: string, options?: Option): Promise<Transaction[]> {
         return new Promise((resolve, reject) => {
             if (options?.error) reject(new Error(options.error));
-            const child = mockChildren.find(child => child.parentId === userId);
+            const child = mockChildren.find(child => child.id === userId);
             const parent = mockUsers.find(user => user.id === userId);
             if (!child && !parent) reject(new Error(`User with id ${userId} not found`));
             if (child) resolve(mockRequests.filter(request => request.childId === child.id))
