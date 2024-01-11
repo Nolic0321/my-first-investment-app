@@ -1,7 +1,7 @@
 'use client'
 import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import { User } from '../models/types';
-import { mockUsers } from '../models/mockClient';
+import { mockUsers } from '../clients/mockClient';
 import {AuthContext} from "./AuthContext";
 
 export const UserContext = createContext<{

@@ -1,6 +1,6 @@
-import {User, Child, Transaction, Option} from './types';
-import IClient from './client';
-import {LoginData} from "../context/AuthContext";
+import {User, Child, Transaction, Option} from '@models/types';
+import IClient from './clientFactory';
+import {LoginData} from "@contexts/AuthContext";
 
 
 export const mockChildren: Child[] = [

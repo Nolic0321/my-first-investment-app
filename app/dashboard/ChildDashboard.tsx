@@ -4,7 +4,7 @@ import {Child, Option, Transaction} from "../models/types";
 import Button from "../components/Button";
 import {guid} from "../models/helperFunctions";
 import {ClientContext} from "../context/ClientContext";
-import IClient from "../models/client";
+import IClient from "../clients/clientFactory";
 import LabelledInput from "../components/Labeled Input";
 
 const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): number => {

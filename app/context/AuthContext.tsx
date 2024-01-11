@@ -1,7 +1,7 @@
 'use client'
 import React, {createContext, useState, ReactNode, useContext, useEffect} from "react";
 import {ClientContext} from "./ClientContext";
-import IClient from "../models/client";
+import IClient from "../clients/clientFactory";
 
 export interface LoginData {
     username: string,

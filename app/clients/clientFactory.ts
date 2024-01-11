@@ -1,5 +1,5 @@
-import {LoginData} from "../context/AuthContext";
-import {Child, Option, Transaction, User} from "./types";
+import {LoginData} from "@contexts/AuthContext";
+import {Child, Option, Transaction, User} from "@models/types";
 import MockClient from "./mockClient";
 
 export default interface IClient {

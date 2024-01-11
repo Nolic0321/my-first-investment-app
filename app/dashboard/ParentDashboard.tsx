@@ -3,7 +3,7 @@ import {useContext, useEffect, useState} from "react";
 import {UserContext, } from "../context/UserContext";
 import {Child, Transaction} from "../models/types";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
-import IClient from "../models/client";
+import IClient from "../clients/clientFactory";
 import {ClientContext} from "../context/ClientContext";
 
 export default function ParentDashboard() {
