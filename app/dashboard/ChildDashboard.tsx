@@ -1,9 +1,9 @@
 import {useContext, useEffect, useState} from "react";
-import {UserContext} from "../context/UserContext";
-import {Child, Option, Transaction} from "../models/types";
+import {UserContext} from "@contexts/UserContext";
+import {Child, Option, Transaction} from "@models/types";
 import Button from "../components/Button";
-import {guid} from "../models/helperFunctions";
-import {ClientContext} from "../context/ClientContext";
+import {guid} from "@models/helperFunctions";
+import {ClientContext} from "@contexts/ClientContext";
 import IClient from "../clients/clientFactory";
 import LabelledInput from "../components/Labeled Input";
 

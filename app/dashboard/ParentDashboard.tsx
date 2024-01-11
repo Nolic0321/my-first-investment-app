@@ -1,10 +1,10 @@
 import Button from "../components/Button";
 import {useContext, useEffect, useState} from "react";
-import {UserContext, } from "../context/UserContext";
-import {Child, Transaction} from "../models/types";
+import {UserContext, } from "@contexts/UserContext";
+import {Child, Transaction} from "@models/types";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import IClient from "../clients/clientFactory";
-import {ClientContext} from "../context/ClientContext";
+import {ClientContext} from "@contexts/ClientContext";
 
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<Child[]>([]);
