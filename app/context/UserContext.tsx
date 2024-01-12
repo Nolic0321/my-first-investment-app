@@ -1,6 +1,6 @@
 'use client'
 import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
-import { User } from '@models/types';
+import { User } from '@models/User';
 import { mockUsers } from '../clients/mockClient';
 import {AuthContext} from "./AuthContext";
 
@@ -13,7 +13,7 @@ interface UserProviderProps {
 	children: ReactNode;
 }
 
-export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+export const UserProvider: React.FC<UserProviderProps> = React.memo(({ children }) => {
 	const { userId } = useContext(AuthContext) || {userId: ""};
 	const [user, setUser] = useState<User | null>(null);
 
@@ -29,9 +29,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 	const updateUser = (updatedUser: User) => {
 		setUser(updatedUser);
 	};
+
 	return (
 		<UserContext.Provider value={{user, updateUser}}>
 			{children}
 		</UserContext.Provider>
 	);
-};
+});

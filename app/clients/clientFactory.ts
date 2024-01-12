@@ -1,10 +1,16 @@
 import {LoginData} from "@contexts/AuthContext";
-import {Child, Option, Transaction, User} from "@models/types";
 import MockClient from "./mockClient";
+import MongoDbClient from "./mongoDbClient";
+import {Option} from "@models/types";
+import {User} from "@models/User";
+import {Child} from "@models/Child";
+import {Transaction} from "@models/Transaction";
+import {ClientType} from "../enums/clientType";
+
 
 export default interface IClient {
     //User CRUD
-    getUser(userData: LoginData, options?:Option): User | null;
+    getUser(userData: LoginData, options?:Option): Promise<User | null>;
     getUsers(options?:Option): User[];
     updateUser(child: Child, options?:Option): void;
     addUser(userData: User, options?:Option): void;
@@ -22,10 +28,13 @@ export default interface IClient {
 
 }
 
-export function create(environment: string):IClient{
-    if(environment === "mock"){
-        return new MockClient();
-    } else {
-        throw new Error("Invalid environment");
+export function GetClient(clientType:ClientType):IClient|null{
+    switch(clientType){
+        case ClientType.Mock:
+            return new MockClient();
+        case ClientType.Mongo:
+            return new MongoDbClient();
+        default:
+            return null;
     }
 }

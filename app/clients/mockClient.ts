@@ -1,6 +1,9 @@
-import {User, Child, Transaction, Option} from '@models/types';
 import IClient from './clientFactory';
 import {LoginData} from "@contexts/AuthContext";
+import {Child} from "@models/Child";
+import {User} from "@models/User";
+import {Transaction} from "@models/Transaction";
+import {Option} from "@models/types";
 
 
 export const mockChildren: Child[] = [
@@ -19,9 +22,9 @@ export default class MockClient implements IClient {
     }
 
     //User CRUD
-    getUser(userData: LoginData): User | null {
+    async getUser(userData: LoginData): Promise<User | null> {
         const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);
-        return user || null;
+        return Promise.resolve(user || null);
     }
 
     getUsers(): User[] {

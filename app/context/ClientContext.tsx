@@ -1,6 +1,7 @@
 'use client'
 import React, {createContext, useState, useEffect, ReactNode} from 'react';
-import IClient, { create } from '../clients/clientFactory';
+import IClient, { GetClient } from '../clients/clientFactory';
+import {ClientType} from "../enums/clientType";
 
 // Create the context
 export const ClientContext = createContext<IClient|null>(null);
@@ -13,16 +14,14 @@ export const ClientProvider: React.FC<ClientProviderProps> = React.memo(({ child
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     // Create the client based on the environment
-    const newClient = create("mock");
-    setClient(newClient);
-    setLoading(false)
+    fetch('api/client')
+        .then(response => response.text())
+        .then(data => {
+            const newClient = GetClient(data as ClientType);
+            setClient(newClient);
+            setLoading(false)
+        });
   }, []);
-
-  if(!client)
-    return <div>Client not loaded</div>
-
-  if(loading)
-    return <div>ClientContext: Loading client context.</div>
 
 
   return (

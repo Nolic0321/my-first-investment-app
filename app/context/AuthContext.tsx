@@ -11,7 +11,7 @@ export interface LoginData {
 export const useAuth = () => useContext(AuthContext);
 export const AuthContext = createContext<{
     userId: string|null;
-    login: (userData: LoginData) => boolean;
+    login: (userData: LoginData) => Promise<boolean>;
     logout: () => void;
 } | null>(null);
 
@@ -29,15 +29,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
         if(storedUserId) setUserId(storedUserId);
     },[]);
 
-    if (!clientContext) {
-        return <div>Loading auth...</div>;	//Loader?
-    }
     const client = clientContext as unknown as IClient
 
-    if(!client) return <div>AuthContext: Loading client...</div>
 
-    const login = (userData: LoginData) => {
-        let user = client.getUser(userData);
+    const login = async (userData: LoginData) => {
+        let user = await client.getUser(userData);
         if (user) {
             setUserId(user.id);
             localStorage.setItem("userId", user.id);
@@ -50,7 +46,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
         setUserId(null);
         localStorage.removeItem("userId");
     };
-
     return (
         <AuthContext.Provider value={{userId, login, logout}}>
             {children}
