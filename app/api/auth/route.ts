@@ -18,7 +18,7 @@ export const POST = async (req: Request, res: Response) => {
                 statusText:'User not found'
             });
         }
-        return new Response(JSON.stringify(user));
+        return Response.json(user);
     } catch (error) {
         console.error(error);
         return new Response(null,{

@@ -11,7 +11,6 @@ interface ClientProviderProps {
 // Create the provider
 export const ClientProvider: React.FC<ClientProviderProps> = React.memo(({ children }) => {
   const [client, setClient] = useState<IClient | null>(null);
-  const [loading, setLoading] = useState(true);
   useEffect(() => {
     // Create the client based on the environment
     fetch('api/client')
@@ -19,7 +18,6 @@ export const ClientProvider: React.FC<ClientProviderProps> = React.memo(({ child
         .then(data => {
             const newClient = GetClient(data as ClientType);
             setClient(newClient);
-            setLoading(false)
         });
   }, []);
 

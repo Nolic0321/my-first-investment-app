@@ -21,9 +21,14 @@ export default class MockClient implements IClient {
     constructor() {
     }
 
-    //User CRUD
-    async getUser(userData: LoginData): Promise<User | null> {
+    async auth(userData: LoginData): Promise<User | null> {
         const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);
+        return Promise.resolve(user || null);
+    }
+
+    //User CRUD
+    async getUser(userId:string): Promise<User | null> {
+        const user = mockUsers.find(user => user.id === userId);
         return Promise.resolve(user || null);
     }
 
@@ -107,6 +112,14 @@ export default class MockClient implements IClient {
             //Return the updated mockRequests array
             const parentId = mockChildren.find(child => child.id === transaction.childId)?.parentId;
             resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child.id).includes(request.childId)));
+        });
+    }
+
+    getChildAccount(childUserId: string): Promise<Child> {
+        return new Promise((resolve, reject) => {
+            const child = mockChildren.find(child => child.id === childUserId);
+            if (child) resolve(child);
+            else reject(new Error(`Child with id ${childUserId} not found`));
         });
     }
 

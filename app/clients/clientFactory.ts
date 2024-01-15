@@ -9,8 +9,9 @@ import {ClientType} from "../enums/clientType";
 
 
 export default interface IClient {
+    auth(userData: LoginData, options?:Option): Promise<User | null>;
     //User CRUD
-    getUser(userData: LoginData, options?:Option): Promise<User | null>;
+    getUser(userId: string, options?:Option): Promise<User | null>;
     getUsers(options?:Option): User[];
     updateUser(child: Child, options?:Option): void;
     addUser(userData: User, options?:Option): void;
@@ -26,6 +27,7 @@ export default interface IClient {
     approveRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
     rejectRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
 
+    getChildAccount(childUserId: string): Promise<Child>;
 }
 
 export function GetClient(clientType:ClientType):IClient|null{

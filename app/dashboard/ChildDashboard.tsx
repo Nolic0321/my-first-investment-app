@@ -1,11 +1,13 @@
 import {useContext, useEffect, useState} from "react";
-import {UserContext} from "@contexts/UserContext";
-import {Child, Option, Transaction} from "@models/types";
 import Button from "../components/Button";
 import {guid} from "@models/helperFunctions";
 import {ClientContext} from "@contexts/ClientContext";
 import IClient from "../clients/clientFactory";
 import LabelledInput from "../components/Labeled Input";
+import {Child} from "@models/Child";
+import {Transaction} from "@models/Transaction";
+import {Option} from "@models/types";
+import {AuthContext} from "@contexts/AuthContext";
 
 const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): number => {
     const dailyInterestRate = yearlyInterestRate / 365;
@@ -13,8 +15,8 @@ const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): nu
 };
 
 export default function ChildDashboard() {
-    const userContext = useContext(UserContext);
-    const {user} = userContext as unknown as { user: Child, updateUser: (updatedUser: Child) => void };
+    const {userId} = useContext(AuthContext)!;
+    const [user, setUser] = useState<Child | null>(null);
     const [dailyEarnings, setDailyEarnings] = useState(0);
     const [pretendSpent, setPretendSpent] = useState("");
     const [pretendAdded, setPretendAdded] = useState("");
@@ -24,17 +26,23 @@ export default function ChildDashboard() {
     const [error, setError] = useState<string>("");
     const client = useContext(ClientContext) as unknown as IClient;
 
+    useEffect(()=>{
+        client.getChildAccount(userId!)
+            .then((child:Child)=>{setUser(child)});
+    }, [userId, client])
+
     useEffect(() => {
+        if(!user) return;
         // Calculate daily earnings
         const earnings = calculateDailyEarnings(user.balance, user.interest / 100);
         // Save that to be displayed
         setDailyEarnings(earnings);
-    }, [user.balance, user.interest]);
+    }, [user]);
 
     useEffect(() => {
         const fetchPendingRequests = async () => {
             try {
-                const requests = await client.getPendingRequests(user.id);
+                const requests = await client.getPendingRequests(userId!);
                 setPendingRequests(requests);
             } catch (error) {
                 console.log(error);
@@ -42,14 +50,14 @@ export default function ChildDashboard() {
         };
 
         fetchPendingRequests();
-    }, [client, user.id]);
+    }, [client, userId]);
 
     const onRequestSubmit = async () => {
         const newRequest: Transaction = {
             amount: Number(requestAmount),
             date: new Date(),
             id: guid(),
-            childId: user.id,
+            childId: userId!,
             reason: requestReason
         }
         // Send request to backend

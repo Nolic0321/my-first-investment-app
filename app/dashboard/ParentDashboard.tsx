@@ -1,10 +1,12 @@
 import Button from "../components/Button";
 import {useContext, useEffect, useState} from "react";
 import {UserContext, } from "@contexts/UserContext";
-import {Child, Transaction} from "@models/types";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import IClient from "../clients/clientFactory";
 import {ClientContext} from "@contexts/ClientContext";
+import {Child} from "@models/Child";
+import {Transaction} from "@models/Transaction";
+import {AuthContext} from "@contexts/AuthContext";
 
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<Child[]>([]);
@@ -18,19 +20,19 @@ export default function ParentDashboard() {
 		setIsDialogOpen(false);
 	};
 
-	const {user} = useContext(UserContext)!;
+	const {userId} = useContext(AuthContext)!
 	useEffect(()=>{
-		if (user) {
-			let childAccounts = client.getChildAccounts(user.id);
+		if (userId) {
+			let childAccounts = client.getChildAccounts(userId);
 			setChildAccounts(childAccounts);
 		}
-	}, [user, client]);
+	}, [userId, client]);
 
 	useEffect(()=>{
 
 		const fetchPendingRequests = async () => {
 			try {
-				const requests = await client.getPendingRequests(user!.id);
+				const requests = await client.getPendingRequests(userId!);
 				setPendingRequests(requests);
 			} catch (error) {
 				console.log(error);
@@ -39,7 +41,7 @@ export default function ParentDashboard() {
 
 		fetchPendingRequests();
 
-	},[client, user])
+	},[client, userId])
 
 	const getPendingRequestsForChild = (childId: string) => {
 		return pendingRequests.filter((request) => request.childId === childId);
@@ -95,7 +97,7 @@ export default function ParentDashboard() {
 				<div>
 					<Button className={"my-4"} buttonText="Create Child Account" onButtonPressed={() => setIsDialogOpen(true)}/>
 				</div>
-				{ user!==null ? <p>Logged in as {user.displayName}</p> : <p>Not logged in</p>}
+				{ userId!==null ? <p>Logged in</p> : <p>Not logged in</p>}
 			</div>
 			<CreateChildAccountDialog isOpen={isDialogOpen} onRequestClose={()=> setIsDialogOpen(false)} onCreateChildAccount={handleCreateChildAccount}/>
 		</>

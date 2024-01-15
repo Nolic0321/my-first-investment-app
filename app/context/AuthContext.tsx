@@ -2,6 +2,7 @@
 import React, {createContext, useState, ReactNode, useContext, useEffect} from "react";
 import {ClientContext} from "./ClientContext";
 import IClient from "../clients/clientFactory";
+import {User} from "@models/User";
 
 export interface LoginData {
     username: string,
@@ -13,6 +14,7 @@ export const AuthContext = createContext<{
     userId: string|null;
     login: (userData: LoginData) => Promise<boolean>;
     logout: () => void;
+    user: User | null;
 } | null>(null);
 
 interface AuthProviderProps {
@@ -21,6 +23,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children}) => {
 	const [userId, setUserId] = useState<string|null>("");
+    const [user, setUser] = useState<User | null>(null);
     const clientContext = useContext(ClientContext);
 
     // Check localStorage for userId
@@ -33,13 +36,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
 
 
     const login = async (userData: LoginData) => {
-        let user = await client.getUser(userData);
-        if (user) {
-            setUserId(user.id);
-            localStorage.setItem("userId", user.id);
-            return true;
-        }
-        return false;
+        const user = await client.auth(userData);
+        if(!user) return false;
+        setUserId(user.id);
+        setUser(user);
+        localStorage.setItem("userId", user.id);
+        return true;
     };
 
     const logout = () => {
@@ -47,7 +49,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
         localStorage.removeItem("userId");
     };
     return (
-        <AuthContext.Provider value={{userId, login, logout}}>
+        <AuthContext.Provider value={{userId, login, logout, user}}>
             {children}
         </AuthContext.Provider>
     );

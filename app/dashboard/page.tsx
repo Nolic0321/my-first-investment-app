@@ -6,11 +6,11 @@ import ChildDashboard from "./ChildDashboard";
 import ParentDashboard from "./ParentDashboard";
 
 export default function Dashboard() {
-	const {user} = useContext(UserContext);
+	const {currentUser} = useContext(UserContext)!;
 
-	const renderUserStatus = user
+	const renderUserStatus = currentUser
 	?	<div>
-			{"balance" in user ? <ChildDashboard/> : <ParentDashboard/>}
+			{"balance" in currentUser ? <ChildDashboard/> : <ParentDashboard/>}
 		</div>
 
 	:	<div className={"xl:w-1/3 sm:w-full"}>
@@ -20,7 +20,7 @@ export default function Dashboard() {
 
 	return (
 		<div className={"mx-4"}>
-			{user ? null : <h1 className={"mb-4"}>Welcome to the Dashboard</h1>}
+			{currentUser ? null : <h1 className={"mb-4"}>Welcome to the Dashboard</h1>}
 			{renderUserStatus}
 		</div>
 	);
