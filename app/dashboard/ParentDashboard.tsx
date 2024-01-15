@@ -1,6 +1,5 @@
 import Button from "../components/Button";
 import {useContext, useEffect, useState} from "react";
-import {UserContext, } from "@contexts/UserContext";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import IClient from "../clients/clientFactory";
 import {ClientContext} from "@contexts/ClientContext";
@@ -20,19 +19,19 @@ export default function ParentDashboard() {
 		setIsDialogOpen(false);
 	};
 
-	const {userId} = useContext(AuthContext)!
+	const {user} = useContext(AuthContext)!
 	useEffect(()=>{
-		if (userId) {
-			let childAccounts = client.getChildAccounts(userId);
+		if (user) {
+			let childAccounts = client.getChildAccounts(user.id);
 			setChildAccounts(childAccounts);
 		}
-	}, [userId, client]);
+	}, [user, client]);
 
 	useEffect(()=>{
 
 		const fetchPendingRequests = async () => {
 			try {
-				const requests = await client.getPendingRequests(userId!);
+				const requests = await client.getPendingRequests(user!.id);
 				setPendingRequests(requests);
 			} catch (error) {
 				console.log(error);
@@ -41,7 +40,7 @@ export default function ParentDashboard() {
 
 		fetchPendingRequests();
 
-	},[client, userId])
+	},[client, user])
 
 	const getPendingRequestsForChild = (childId: string) => {
 		return pendingRequests.filter((request) => request.childId === childId);
@@ -97,7 +96,7 @@ export default function ParentDashboard() {
 				<div>
 					<Button className={"my-4"} buttonText="Create Child Account" onButtonPressed={() => setIsDialogOpen(true)}/>
 				</div>
-				{ userId!==null ? <p>Logged in</p> : <p>Not logged in</p>}
+				{ user!==null ? <p>Logged in</p> : <p>Not logged in</p>}
 			</div>
 			<CreateChildAccountDialog isOpen={isDialogOpen} onRequestClose={()=> setIsDialogOpen(false)} onCreateChildAccount={handleCreateChildAccount}/>
 		</>

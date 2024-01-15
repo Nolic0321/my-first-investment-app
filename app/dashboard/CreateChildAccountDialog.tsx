@@ -2,7 +2,6 @@ import React, {useContext, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import Button from "@components/Button";
 import LabelledInput from "@components/Labeled Input";
-import {UserContext} from "@contexts/UserContext";
 import {Child} from "@models/Child";
 import {AuthContext} from "@contexts/AuthContext";
 

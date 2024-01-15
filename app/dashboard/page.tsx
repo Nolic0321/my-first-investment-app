@@ -1,16 +1,16 @@
 'use client'
 import {useContext} from "react";
-import {UserContext} from "../context/UserContext";
 import Login from "../components/Login";
 import ChildDashboard from "./ChildDashboard";
 import ParentDashboard from "./ParentDashboard";
+import {AuthContext} from "@contexts/AuthContext";
 
 export default function Dashboard() {
-	const {currentUser} = useContext(UserContext)!;
+	const {user} = useContext(AuthContext)!;
 
-	const renderUserStatus = currentUser
+	const renderUserStatus = user
 	?	<div>
-			{"balance" in currentUser ? <ChildDashboard/> : <ParentDashboard/>}
+			{"balance" in user ? <ChildDashboard/> : <ParentDashboard/>}
 		</div>
 
 	:	<div className={"xl:w-1/3 sm:w-full"}>
@@ -20,7 +20,7 @@ export default function Dashboard() {
 
 	return (
 		<div className={"mx-4"}>
-			{currentUser ? null : <h1 className={"mb-4"}>Welcome to the Dashboard</h1>}
+			{user ? null : <h1 className={"mb-4"}>Welcome to the Dashboard</h1>}
 			{renderUserStatus}
 		</div>
 	);

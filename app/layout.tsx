@@ -4,7 +4,6 @@ import "./globals.css";
 import Nav from "./nav";
 import React from "react";
 import {AuthProvider} from "./context/AuthContext";
-import {UserProvider} from "./context/UserContext";
 import {ClientProvider} from "./context/ClientContext";
 
 const inter = Inter({subsets: ["latin"]});
@@ -20,12 +19,10 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
         <body className={inter.className}>
         <ClientProvider>
             <AuthProvider>
-                <UserProvider>
-                    <Nav/>
+                <Nav/>
                     <div id={"main"} className={"mt-8"}>
                         {children}
                     </div>
-                </UserProvider>
             </AuthProvider>
         </ClientProvider>
         </body>
