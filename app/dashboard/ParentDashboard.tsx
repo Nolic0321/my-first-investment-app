@@ -22,8 +22,11 @@ export default function ParentDashboard() {
 	const {user} = useContext(AuthContext)!
 	useEffect(()=>{
 		if (user) {
-			let childAccounts = client.getChildAccounts(user.id);
-			setChildAccounts(childAccounts);
+			client.getChildAccounts(user.id)
+				.then((childAccounts) => {
+					if(childAccounts)
+						setChildAccounts(childAccounts);
+				});
 		}
 	}, [user, client]);
 

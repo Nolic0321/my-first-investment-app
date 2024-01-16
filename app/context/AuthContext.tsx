@@ -2,7 +2,7 @@
 import React, {createContext, useState, ReactNode, useContext, useEffect} from "react";
 import {ClientContext} from "./ClientContext";
 import IClient from "../clients/clientFactory";
-import {User} from "@models/User";
+import {IUser} from "@models/IUser";
 
 export interface LoginData {
     username: string,
@@ -14,7 +14,7 @@ export const AuthContext = createContext<{
     userId: string|null;
     login: (userData: LoginData) => Promise<boolean>;
     logout: () => void;
-    user: User | null;
+    user: IUser | null;
 } | null>(null);
 
 interface AuthProviderProps {
@@ -23,7 +23,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children}) => {
 	const [userId, setUserId] = useState<string|null>("");
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<IUser | null>(null);
     const clientContext = useContext(ClientContext);
 
     // Check localStorage for userId
@@ -46,6 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
 
     const logout = () => {
         setUserId(null);
+        setUser(null);
         localStorage.removeItem("userId");
     };
     return (

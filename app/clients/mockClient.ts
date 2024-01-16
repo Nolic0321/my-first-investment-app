@@ -1,7 +1,7 @@
 import IClient from './clientFactory';
 import {LoginData} from "@contexts/AuthContext";
 import {Child} from "@models/Child";
-import {User} from "@models/User";
+import {IUser} from "@models/IUser";
 import {Transaction} from "@models/Transaction";
 import {Option} from "@models/types";
 
@@ -10,7 +10,7 @@ export const mockChildren: Child[] = [
     {id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1', parentId: "1", balance: 250, interest: 12},
     {id: "123", username: 'child2', password: 'pass123', displayName: 'Child 2', parentId: "1", balance: 1150, interest: 12},
 ];
-export const mockUsers: User[] = [
+export const mockUsers: IUser[] = [
     {id: "1", username: 'parent1', password: 'pass123', displayName: 'Parent One'},
     ...mockChildren,
 ];
@@ -21,43 +21,47 @@ export default class MockClient implements IClient {
     constructor() {
     }
 
-    async auth(userData: LoginData): Promise<User | null> {
+    async auth(userData: LoginData): Promise<IUser | null> {
         const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);
         return Promise.resolve(user || null);
     }
 
     //User CRUD
-    async getUser(userId:string): Promise<User | null> {
+    async getUser(userId:string): Promise<IUser | null> {
         const user = mockUsers.find(user => user.id === userId);
         return Promise.resolve(user || null);
     }
 
-    getUsers(): User[] {
-        return mockUsers;
+    getUsers(): Promise<IUser[]|null> {
+        return Promise.resolve(mockUsers);
     }
 
-    updateUser(user: User) {
+    updateUser(user: IUser): Promise<void>{
         const userIndex = mockUsers.findIndex(u => u.id === user.id);
         mockUsers[userIndex] = user;
+        return Promise.resolve();
     }
 
-    addUser(userData: User) {
+    addUser(userData: IUser): Promise<void>{
         mockUsers.push(userData);
+        return Promise.resolve();
     }
 
     //Child CRUD
-    addChildUser(childData: Child) {
+    addChildUser(childData: Child): Promise<void> {
         mockUsers.push(childData);
         mockChildren.push(childData);
+        return Promise.resolve();
     }
 
-    getChildAccounts(parentId: string): Child[] {
-        return mockChildren.filter(child => child.parentId === parentId);
+    getChildAccounts(parentId: string): Promise<Child[]|null> {
+        return Promise.resolve(mockChildren.filter(child => child.parentId === parentId));
     }
 
-    deleteChildAccount(childId: string) {
+    deleteChildAccount(childId: string): Promise<void> {
         const userIndex = mockUsers.findIndex(user => user.id === childId);
         mockUsers.splice(userIndex, 1);
+        return Promise.resolve();
     }
 
     //Transaction CRUD

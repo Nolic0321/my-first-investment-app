@@ -1,7 +1,7 @@
-import {User} from "@models/User";
+import {IUser} from "@models/IUser";
 import mongoose from "mongoose";
 
-export interface Child extends User{
+export interface Child extends IUser{
     parentId: string;
     balance: number;
     interest: number;

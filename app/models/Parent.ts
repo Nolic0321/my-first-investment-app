@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import {User} from "@models/User";
+import {IUser} from "@models/IUser";
 
-export interface Parent extends User{}
+export interface Parent extends IUser{}
 
 const ParentSchema = new mongoose.Schema<Parent>({
     id: String,

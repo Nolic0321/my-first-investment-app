@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import {LoginData} from "@contexts/AuthContext";
-import Users from "@models/User";
+import Users from "@models/IUser";
 import {dbConnect} from "../routeHelper";
 
 dotenv.config();
