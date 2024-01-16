@@ -1,12 +1,11 @@
 import dotenv from 'dotenv';
 import {LoginData} from "@contexts/AuthContext";
-import Users, {User} from "@models/User";
-import mongoose from 'mongoose';
+import Users from "@models/User";
 import {dbConnect} from "../routeHelper";
 
 dotenv.config();
 
-export const POST = async (req: Request, res: Response) => {
+export const POST = async (req: Request) => {
     await dbConnect();
     const loginData = await req.json() as LoginData; // Assuming the user ID is passed as a URL parameter
     try {

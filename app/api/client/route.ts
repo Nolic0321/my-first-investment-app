@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import mongoose from 'mongoose';
 import {ClientType} from "../../enums/clientType";
 
-export const GET = async (req:Request, res:Response) => {
+export const GET = async () => {
     dotenv.config();
     switch (process.env.ENVIRONMENT) {
         case "mock":
