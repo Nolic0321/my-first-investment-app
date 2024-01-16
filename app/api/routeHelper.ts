@@ -13,3 +13,17 @@ export function CreateResponse(status: number, message: string, data?: any): Res
             }
         });
 }
+
+const connection: { isConnected?: number } = {};
+
+export async function dbConnect() {
+    // check if we have a connection to the database or if it's currently
+    // connecting or disconnecting (readyState 1, 2 and 3)
+    if (connection.isConnected) {
+        return;
+    }
+
+    const db = await mongoose.connect(process.env.MONGODB_URI as string);
+
+    connection.isConnected = db.connections[0].readyState;
+}

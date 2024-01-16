@@ -7,7 +7,6 @@ import {Transaction} from "@models/Transaction";
 
 export default class MongoDbClient implements IClient {
     async auth(userData: LoginData, options?: Option | undefined): Promise<User | null> {
-        console.log('auth');
         try {
             const response = await fetch('/api/auth', {
                 method: 'POST',

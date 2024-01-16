@@ -2,8 +2,6 @@ import dotenv from "dotenv";
 import mongoose from 'mongoose';
 import {ClientType} from "../../enums/clientType";
 
-
-
 export const GET = async (req:Request, res:Response) => {
     dotenv.config();
     switch (process.env.ENVIRONMENT) {
