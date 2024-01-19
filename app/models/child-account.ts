@@ -7,12 +7,8 @@ export interface ChildAccount extends IUser{
     interest: number;
 }
 
-interface ChildAccountDocument extends ChildAccount, Document {
-    _id: any;
-}
-
 const ChildAccountSchema = new mongoose.Schema<ChildAccount>({
-    id: String,
+    _id: String,
     username: String,
     password: String,
     displayName: String,
@@ -21,14 +17,4 @@ const ChildAccountSchema = new mongoose.Schema<ChildAccount>({
     interest: Number
 });
 
-ChildAccountSchema.virtual('id').get(function(this: ChildAccountDocument) {
-    return this._id.toHexString();
-});
-
-ChildAccountSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: function (doc, ret) { delete ret._id }
-});
-
-export default mongoose.models.Child || mongoose.model<ChildAccount>("ChildAccount", ChildAccountSchema);
+export const ChildAccount = mongoose.model("ChildAccount", ChildAccountSchema);

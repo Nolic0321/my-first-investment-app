@@ -7,11 +7,11 @@ import {Option} from "@models/option";
 
 
 export const mockChildren: ChildAccount[] = [
-    {id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1', parentId: "1", balance: 250, interest: 12},
-    {id: "123", username: 'child2', password: 'pass123', displayName: 'Child 2', parentId: "1", balance: 1150, interest: 12},
+    {_id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1', parentId: "1", balance: 250, interest: 12},
+    {_id: "123", username: 'child2', password: 'pass123', displayName: 'Child 2', parentId: "1", balance: 1150, interest: 12},
 ];
 export const mockUsers: IUser[] = [
-    {id: "1", username: 'parent1', password: 'pass123', displayName: 'Parent One'},
+    {_id: "1", username: 'parent1', password: 'pass123', displayName: 'Parent One'},
     ...mockChildren,
 ];
 
@@ -28,7 +28,7 @@ export default class MockClient implements IClient {
 
     //User CRUD
     async getUser(userId:string): Promise<IUser | null> {
-        const user = mockUsers.find(user => user.id === userId);
+        const user = mockUsers.find(user => user._id === userId);
         return Promise.resolve(user || null);
     }
 
@@ -37,7 +37,7 @@ export default class MockClient implements IClient {
     }
 
     updateUser(user: IUser): Promise<IUser|null>{
-        const userIndex = mockUsers.findIndex(u => u.id === user.id);
+        const userIndex = mockUsers.findIndex(u => u._id === user._id);
         mockUsers[userIndex] = user;
         return Promise.resolve(user);
     }
@@ -59,7 +59,7 @@ export default class MockClient implements IClient {
     }
 
     deleteChildAccount(childId: string): Promise<void> {
-        const userIndex = mockUsers.findIndex(user => user.id === childId);
+        const userIndex = mockUsers.findIndex(user => user._id === childId);
         mockUsers.splice(userIndex, 1);
         return Promise.resolve();
     }
@@ -68,21 +68,21 @@ export default class MockClient implements IClient {
     getPendingRequests(userId: string, options?: Option): Promise<Transaction[]> {
         return new Promise((resolve, reject) => {
             if (options?.error) reject(new Error(options.error));
-            const child = mockChildren.find(child => child.id === userId);
-            const parent = mockUsers.find(user => user.id === userId);
+            const child = mockChildren.find(child => child._id === userId);
+            const parent = mockUsers.find(user => user._id === userId);
             if (!child && !parent) reject(new Error(`User with id ${userId} not found`));
-            if (child) resolve(mockRequests.filter(request => request.childId === child.id))
-            if (parent) resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === userId).map(child => child.id).includes(request.childId)));
+            if (child) resolve(mockRequests.filter(request => request.childId === child._id))
+            if (parent) resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === userId).map(child => child._id).includes(request.childId)));
         });
     }
 
     sendRequest(newRequest: Transaction, options?: Option): Promise<Transaction[]> {
         return new Promise((resolve, reject) => {
             if (options?.error) reject(new Error(options.error));
-            const child = mockChildren.find(child => child.id === newRequest.childId);
+            const child = mockChildren.find(child => child._id === newRequest.childId);
             if (child) {
                 mockRequests.push(newRequest);
-                resolve(mockRequests.filter(request => mockChildren.filter(child => newRequest.childId === child.id).map(child => child.id).includes(request.childId)));
+                resolve(mockRequests.filter(request => mockChildren.filter(child => newRequest.childId === child._id).map(child => child._id).includes(request.childId)));
             } else {
                 reject(new Error('Child not found'))
             }
@@ -99,8 +99,8 @@ export default class MockClient implements IClient {
             //Otherwise remove it from the mockRequests array
             mockRequests.splice(transactionIndex, 1);
             //Return the updated mockRequests array
-            const parentId = mockChildren.find(child => child.id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child.id).includes(request.childId)));
+            const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId)));
         });
     }
 
@@ -114,14 +114,14 @@ export default class MockClient implements IClient {
             //Otherwise remove it from the mockRequests array
             mockRequests.splice(transactionIndex, 1);
             //Return the updated mockRequests array
-            const parentId = mockChildren.find(child => child.id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child.id).includes(request.childId)));
+            const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId)));
         });
     }
 
     getChildAccount(childUserId: string): Promise<ChildAccount> {
         return new Promise((resolve, reject) => {
-            const child = mockChildren.find(child => child.id === childUserId);
+            const child = mockChildren.find(child => child._id === childUserId);
             if (child) resolve(child);
             else reject(new Error(`Child with id ${childUserId} not found`));
         });

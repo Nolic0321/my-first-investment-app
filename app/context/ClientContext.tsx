@@ -1,7 +1,8 @@
 'use client'
 import React, {createContext, useState, useEffect, ReactNode} from 'react';
-import IClient, { GetClient } from '../clients/clientFactory';
 import {ClientType} from "../enums/clientType";
+import IClient from "@models/client";
+import {GetClient} from "../clients/clientFactory";
 
 // Create the context
 export const ClientContext = createContext<IClient|null>(null);

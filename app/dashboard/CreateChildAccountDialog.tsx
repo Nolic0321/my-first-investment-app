@@ -4,6 +4,7 @@ import Button from "@components/Button";
 import LabelledInput from "@components/LabeledInput";
 import {ChildAccount} from "@models/child-account";
 import {AuthContext} from "@contexts/AuthContext";
+import {guid} from "../helper-functions";
 
 interface CreateChildAccountDialogProps {
     isOpen: boolean;
@@ -17,16 +18,15 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
     const [password, setPassword] = useState("");
     const [startingBalance, setStartingBalance] = useState(0);
     const [interest, setInterest] = useState(0);
-    const {userId} = useContext(AuthContext)!;
+    const {user} = useContext(AuthContext)!;
     const handleOnCreate = () => {
         const child: ChildAccount = {
-            id: "newid",
             displayName,
             username,
             password,
             balance: startingBalance,
             interest,
-            parentId: userId??"" // This should be set to the current user's id
+            parentId: user?._id??"" // This should be set to the current user's id
         };
         onCreateChildAccount(child);
     };

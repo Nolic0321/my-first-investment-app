@@ -9,7 +9,7 @@ export default class MongoDbClient implements IClient {
     async auth(userData: LoginData, options?: Option | undefined): Promise<IUser | null> {
         try {
             const response = await this.post(`/api/auth`, userData);
-            return {...response, id: response._id} as IUser;
+            return {...response, userId: response._id} as IUser;
         } catch (e) {
             console.log(e);
             return null;
@@ -38,7 +38,7 @@ export default class MongoDbClient implements IClient {
 
     async updateUser(user: IUser, options?: Option | undefined): Promise<IUser|null> {
         try{
-            const response = await this.patch(`/api/user/${user.id}`, user);
+            const response = await this.patch(`/api/user/${user._id}`, user);
             return response as IUser;
         } catch (e) {
             console.log(e);
@@ -58,7 +58,7 @@ export default class MongoDbClient implements IClient {
 
     async addChildUser(childData: ChildAccount, options?: Option | undefined): Promise<ChildAccount | null> {
         try{
-            const response = await this.post(`/api/user`, childData);
+            const response = await this.post(`/api/childaccount`, childData);
             return response as ChildAccount;
         } catch(e){
             console.log(e);

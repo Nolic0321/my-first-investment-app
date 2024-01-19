@@ -2,6 +2,7 @@
 import React, {createContext, useState, ReactNode, useContext, useEffect} from "react";
 import {ClientContext} from "./ClientContext";
 import {IUser} from "@models/user";
+import {ChildAccount} from "@models/child-account";
 
 export interface LoginData {
     username: string,
@@ -10,10 +11,9 @@ export interface LoginData {
 
 export const useAuth = () => useContext(AuthContext);
 export const AuthContext = createContext<{
-    userId: string|null;
     login: (userData: LoginData) => Promise<boolean>;
     logout: () => void;
-    user: IUser | null;
+    user: IUser | ChildAccount | null;
 } | null>(null);
 
 interface AuthProviderProps {
@@ -21,32 +21,38 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children}) => {
-	const [userId, setUserId] = useState<string|null>("");
     const [user, setUser] = useState<IUser | null>(null);
-    const clientContext = useContext(ClientContext);
+    const clientContext = useContext(ClientContext)!;
 
     // Check localStorage for userId
     useEffect(()=>{
+        if(!clientContext) return;
         const storedUserId = localStorage.getItem("userId");
-        if(storedUserId) setUserId(storedUserId);
-    },[]);
+        if(storedUserId) {
+            clientContext.getUser(storedUserId)
+                .then((user) => {
+                    if(user) {
+                        setUser(user);
+                    }
+                });
+        };
+    },[clientContext]);
 
     const login = async (userData: LoginData) => {
         const user = await clientContext.auth(userData);
-        if(!user) return false;
-        setUserId(user.id);
+        console.log(`user: ${JSON.stringify(user)}`);
+        if(!user || !user._id) return false;
         setUser(user);
-        localStorage.setItem("userId", user.id);
+        localStorage.setItem("userId", user._id);
         return true;
     };
 
     const logout = () => {
-        setUserId(null);
         setUser(null);
         localStorage.removeItem("userId");
     };
     return (
-        <AuthContext.Provider value={{userId, login, logout, user}}>
+        <AuthContext.Provider value={{login, logout, user}}>
             {children}
         </AuthContext.Provider>
     );
