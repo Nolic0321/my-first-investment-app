@@ -1,9 +1,9 @@
-import IClient from "./clientFactory";
+import IClient from "@models/client";
 import {LoginData} from "@contexts/AuthContext";
-import {Option} from "@models/types";
-import {IUser} from "@models/IUser";
-import {Child} from "@models/Child";
-import {Transaction} from "@models/Transaction";
+import {Option} from "@models/option";
+import {IUser} from "@models/user";
+import {ChildAccount} from "@models/child-account";
+import {Transaction} from "@models/transaction";
 
 export default class MongoDbClient implements IClient {
     async auth(userData: LoginData, options?: Option | undefined): Promise<IUser | null> {
@@ -29,34 +29,58 @@ export default class MongoDbClient implements IClient {
     async getUsers(options?: Option | undefined): Promise<IUser[] | null> {
         try{
             const response = await this.get(`/api/user`);
-            return await response as IUser[];
+            return response as IUser[];
         } catch (e) {
             console.log(e);
             return null;
         }
     }
 
-    updateUser(child: Child, options?: Option | undefined): Promise<void> {
-        throw new Error("Method not implemented.");
+    async updateUser(user: IUser, options?: Option | undefined): Promise<IUser|null> {
+        try{
+            const response = await this.patch(`/api/user/${user.id}`, user);
+            return response as IUser;
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
     }
 
     addUser(userData: IUser, options?: Option | undefined): Promise<void> {
+        try{
+            const response = this.post(`/api/user`, userData);
+            return response as Promise<void>;
+        }catch (e){
+            console.log(e);
+            return Promise.resolve();
+        }
+    }
+
+    async addChildUser(childData: ChildAccount, options?: Option | undefined): Promise<ChildAccount | null> {
+        try{
+            const response = await this.post(`/api/user`, childData);
+            return response as ChildAccount;
+        } catch(e){
+            console.log(e);
+            return null;
+        }
+    }
+
+    async getChildAccounts(parentId: string, options?: Option | undefined): Promise<ChildAccount[]|null> {
+        try{
+            const response = await this.get(`/api/childaccount`, {parentId: parentId});
+            return response as ChildAccount[];
+        } catch (e) {
+            console.log(e);
+            return null;
+        }
+    }
+
+    async getChildAccount(childUserId: string): Promise<ChildAccount> {
         throw new Error("Method not implemented.");
     }
 
-    addChildUser(childData: Child, options?: Option | undefined): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-
-    getChildAccounts(parentId: string, options?: Option | undefined): Promise<Child[]|null> {
-        throw new Error("Method not implemented.");
-    }
-
-    getChildAccount(childUserId: string): Promise<Child> {
-        throw new Error("Method not implemented.");
-    }
-
-    deleteChildAccount(childId: string, options?: Option | undefined): Promise<void> {
+    async deleteChildAccount(childId: string, options?: Option | undefined): Promise<void> {
         throw new Error("Method not implemented.");
     }
 
@@ -94,6 +118,34 @@ export default class MongoDbClient implements IClient {
         try{
             const response = await fetch(url,{
                 method: 'POST',
+                body: JSON.stringify(body),
+                headers: headers
+            });
+            return await response.json();
+        }catch (e){
+            console.log(e);
+            return null;
+        }
+    }
+
+    private async put(url:string, body?:any, headers?:any){
+        try{
+            const response = await fetch(url,{
+                method: 'PUT',
+                body: JSON.stringify(body),
+                headers: headers
+            });
+            return await response.json();
+        }catch (e){
+            console.log(e);
+            return null;
+        }
+    }
+
+    private async patch(url:string, body?:any, headers?:any){
+        try{
+            const response = await fetch(url,{
+                method: 'PUT',
                 body: JSON.stringify(body),
                 headers: headers
             });

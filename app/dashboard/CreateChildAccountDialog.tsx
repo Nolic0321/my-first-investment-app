@@ -1,14 +1,14 @@
 import React, {useContext, useState} from "react";
 import {Dialog} from "@headlessui/react";
 import Button from "@components/Button";
-import LabelledInput from "@components/Labeled Input";
-import {Child} from "@models/Child";
+import LabelledInput from "@components/LabeledInput";
+import {ChildAccount} from "@models/child-account";
 import {AuthContext} from "@contexts/AuthContext";
 
 interface CreateChildAccountDialogProps {
     isOpen: boolean;
     onRequestClose: () => void;
-    onCreateChildAccount: (child: Child) => void;
+    onCreateChildAccount: (child: ChildAccount) => void;
 }
 
 export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> = ({isOpen, onRequestClose, onCreateChildAccount}) => {
@@ -19,7 +19,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
     const [interest, setInterest] = useState(0);
     const {userId} = useContext(AuthContext)!;
     const handleOnCreate = () => {
-        const child: Child = {
+        const child: ChildAccount = {
             id: "newid",
             displayName,
             username,

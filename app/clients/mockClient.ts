@@ -1,12 +1,12 @@
-import IClient from './clientFactory';
+import IClient from '@models/client';
 import {LoginData} from "@contexts/AuthContext";
-import {Child} from "@models/Child";
-import {IUser} from "@models/IUser";
-import {Transaction} from "@models/Transaction";
-import {Option} from "@models/types";
+import {ChildAccount} from "@models/child-account";
+import {IUser} from "@models/user";
+import {Transaction} from "@models/transaction";
+import {Option} from "@models/option";
 
 
-export const mockChildren: Child[] = [
+export const mockChildren: ChildAccount[] = [
     {id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1', parentId: "1", balance: 250, interest: 12},
     {id: "123", username: 'child2', password: 'pass123', displayName: 'Child 2', parentId: "1", balance: 1150, interest: 12},
 ];
@@ -36,10 +36,10 @@ export default class MockClient implements IClient {
         return Promise.resolve(mockUsers);
     }
 
-    updateUser(user: IUser): Promise<void>{
+    updateUser(user: IUser): Promise<IUser|null>{
         const userIndex = mockUsers.findIndex(u => u.id === user.id);
         mockUsers[userIndex] = user;
-        return Promise.resolve();
+        return Promise.resolve(user);
     }
 
     addUser(userData: IUser): Promise<void>{
@@ -48,13 +48,13 @@ export default class MockClient implements IClient {
     }
 
     //Child CRUD
-    addChildUser(childData: Child): Promise<void> {
+    async addChildUser(childData: ChildAccount): Promise<ChildAccount| null> {
         mockUsers.push(childData);
         mockChildren.push(childData);
-        return Promise.resolve();
+        return Promise.resolve(childData);
     }
 
-    getChildAccounts(parentId: string): Promise<Child[]|null> {
+    getChildAccounts(parentId: string): Promise<ChildAccount[]|null> {
         return Promise.resolve(mockChildren.filter(child => child.parentId === parentId));
     }
 
@@ -119,7 +119,7 @@ export default class MockClient implements IClient {
         });
     }
 
-    getChildAccount(childUserId: string): Promise<Child> {
+    getChildAccount(childUserId: string): Promise<ChildAccount> {
         return new Promise((resolve, reject) => {
             const child = mockChildren.find(child => child.id === childUserId);
             if (child) resolve(child);

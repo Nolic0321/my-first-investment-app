@@ -1,8 +1,7 @@
 'use client'
 import React, {createContext, useState, ReactNode, useContext, useEffect} from "react";
 import {ClientContext} from "./ClientContext";
-import IClient from "../clients/clientFactory";
-import {IUser} from "@models/IUser";
+import {IUser} from "@models/user";
 
 export interface LoginData {
     username: string,
@@ -32,11 +31,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
         if(storedUserId) setUserId(storedUserId);
     },[]);
 
-    const client = clientContext as unknown as IClient
-
-
     const login = async (userData: LoginData) => {
-        const user = await client.auth(userData);
+        const user = await clientContext.auth(userData);
         if(!user) return false;
         setUserId(user.id);
         setUser(user);

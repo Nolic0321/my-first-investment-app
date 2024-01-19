@@ -1,12 +1,12 @@
 import {useContext, useEffect, useState} from "react";
 import Button from "../components/Button";
-import {guid} from "@models/helperFunctions";
+import {guid} from "../helper-functions";
 import {ClientContext} from "@contexts/ClientContext";
 import IClient from "../clients/clientFactory";
-import LabelledInput from "../components/Labeled Input";
-import {Child} from "@models/Child";
+import LabelledInput from "../components/LabeledInput";
+import {ChildAccount} from "@models/child-account";
 import {Transaction} from "@models/Transaction";
-import {Option} from "@models/types";
+import {Option} from "@models/option";
 import {AuthContext} from "@contexts/AuthContext";
 
 const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): number => {
@@ -16,7 +16,7 @@ const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): nu
 
 export default function ChildDashboard() {
     const {userId} = useContext(AuthContext)!;
-    const [user, setUser] = useState<Child | null>(null);
+    const [user, setUser] = useState<ChildAccount | null>(null);
     const [dailyEarnings, setDailyEarnings] = useState(0);
     const [pretendSpent, setPretendSpent] = useState("");
     const [pretendAdded, setPretendAdded] = useState("");
@@ -28,7 +28,7 @@ export default function ChildDashboard() {
 
     useEffect(()=>{
         client.getChildAccount(userId!)
-            .then((child:Child)=>{setUser(child)});
+            .then((child:ChildAccount)=>{setUser(child)});
     }, [userId, client])
 
     useEffect(() => {

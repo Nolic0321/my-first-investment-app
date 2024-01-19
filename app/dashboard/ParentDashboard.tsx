@@ -3,17 +3,17 @@ import {useContext, useEffect, useState} from "react";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import IClient from "../clients/clientFactory";
 import {ClientContext} from "@contexts/ClientContext";
-import {Child} from "@models/Child";
-import {Transaction} from "@models/Transaction";
+import {ChildAccount} from "@models/child-account";
+import {Transaction} from "@models/transaction";
 import {AuthContext} from "@contexts/AuthContext";
 
 export default function ParentDashboard() {
-	const [childAccounts, setChildAccounts] = useState<Child[]>([]);
+	const [childAccounts, setChildAccounts] = useState<ChildAccount[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [pendingRequests, setPendingRequests] = useState<Transaction[]>([]);
 	const client = useContext(ClientContext) as unknown as IClient
 
-	const handleCreateChildAccount = (child: Child) => {
+	const handleCreateChildAccount = (child: ChildAccount) => {
 		client.addChildUser(child);
 		setChildAccounts([...childAccounts, child]);
 		setIsDialogOpen(false);

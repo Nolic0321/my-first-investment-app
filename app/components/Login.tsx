@@ -7,13 +7,13 @@ export default function Login() {
 	const [password, setPassword] = useState("");
 	const authContext = useContext(AuthContext);
 	const [loginFailed, setLoginFailed] = useState(false);
-	const login = () => {
+	const login = async () => {
 		if(authContext){
 			const credentials: LoginData = {
 				username: username,
 				password: password
 			}
-			setLoginFailed(!authContext.login(credentials));
+			setLoginFailed(!(await authContext.login(credentials)));
 		}
 	}
 
@@ -41,7 +41,7 @@ export default function Login() {
 					onChange={(e) => setPassword(e.target.value)}
 				/>
 			</div>
-			<div className={"text-red-500"}>{loginFailed?"Login Failed":null}</div>
+			<div className={"text-red-500"}>{loginFailed?"Login Failed":""}</div>
 			<Button className={"my-4"} buttonText="Login" onButtonPressed={login}/>
 		</div>
 	);

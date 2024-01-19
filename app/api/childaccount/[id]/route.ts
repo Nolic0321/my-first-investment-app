@@ -1,17 +1,18 @@
-import Users, {IUser} from "@models/user";
+import {IUser} from "@models/user";
 import {dbConnect} from "../../routeHelper";
+import ChildAccount from "@models/child-account";
 
 dbConnect();
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
     try {
-        const user = await Users.findById(params.id); // Replace 'UserSchema' with your actual User schema
-        if (!user) {
+        const childAccount = await ChildAccount.findById(params.id);
+        if (!childAccount) {
             return new Response(null, {
                 status: 404,
                 statusText: 'User not found'
             });
         }
-        return Response.json(user);
+        return Response.json(childAccount);
     } catch (error) {
         return new Response(null, {
 
@@ -23,15 +24,15 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
 
 export const PATCH = async (req: Request, {params}: { params: { id: string } }) => {
     try {
-        const userData = await req.json() as IUser; // Assuming the user ID is passed as a URL parameter
-        const user = await Users.findByIdAndUpdate(params.id, userData, {new: true}); // The 'new' option returns the updated document
-        if (!user) {
+        const requestData = await req.json() as IUser;
+        const childAccount = await ChildAccount.findByIdAndUpdate(params.id, requestData, {new: true});
+        if (!childAccount) {
             return new Response(null, {
                 status: 404,
                 statusText: 'User not found'
             });
         }
-        return Response.json(user);
+        return Response.json(childAccount);
     } catch (error) {
         return new Response(null, {
             status: 500,

@@ -14,7 +14,7 @@ export default function Nav() {
 		{href: "/dashboard", text: "Dashboard"}
 	];
 
-	const {userId,logout} = authContext;
+	const {user,logout} = authContext;
 	return (
 		<div className={"border-b-2"}>
 			<div className={"flex mx-4 mt-4 pb-2"}>
@@ -22,7 +22,7 @@ export default function Nav() {
 					<Link key={link.href} href={link.href} className={"mx-2"}>{link.text}</Link>
 				))}
 				<div className={"flex-grow"}/>
-				{userId ? <Link key={"#"} href={"#"} onClick={logout}>Logout</Link> : null}
+				{user ? <Link key={"#"} href={"#"} onClick={logout}>Logout</Link> : null}
 			</div>
 		</div>
 	);

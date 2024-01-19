@@ -5,6 +5,7 @@ import Nav from "./nav";
 import React from "react";
 import {AuthProvider} from "./context/AuthContext";
 import {ClientProvider} from "./context/ClientContext";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -17,6 +18,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
         <html lang="en">
         <body className={inter.className}>
+        <SpeedInsights/>
         <ClientProvider>
             <AuthProvider>
                 <Nav/>
