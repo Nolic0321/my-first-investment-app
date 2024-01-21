@@ -1,16 +1,9 @@
-import mongoose, {Schema} from "mongoose";
+import {ObjectId} from "mongodb";
 
 export interface IUser {
-    _id?:string;
+    _id?: any;
+    isChildAccount?:boolean;
     username: string;
     password: string; // In a real app, passwords should be hashed and not stored as plain text
     displayName: string;
 }
-
-const UserSchema = new Schema<IUser>({
-    username: String,
-    password: String,
-    displayName: String
-});
-
-export default mongoose.models.User || mongoose.model<IUser>("User", UserSchema);

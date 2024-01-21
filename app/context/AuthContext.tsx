@@ -40,7 +40,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
 
     const login = async (userData: LoginData) => {
         const user = await clientContext.auth(userData);
-        console.log(`user: ${JSON.stringify(user)}`);
         if(!user || !user._id) return false;
         setUser(user);
         localStorage.setItem("userId", user._id);

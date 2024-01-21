@@ -1,11 +1,9 @@
 import {IUser} from "@models/user";
-import {dbConnect} from "../../routeHelper";
 import {ChildAccount} from "@models/child-account";
-
-dbConnect();
+import {findById, updateOneById} from "@mongoDataApiHelper";
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
     try {
-        const childAccount = await ChildAccount.findById(params.id);
+        const childAccount = await findById<ChildAccount>("childaccounts",params.id);
         if (!childAccount) {
             return new Response(null, {
                 status: 404,
@@ -25,7 +23,7 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
 export const PATCH = async (req: Request, {params}: { params: { id: string } }) => {
     try {
         const requestData = await req.json() as IUser;
-        const childAccount = await ChildAccount.findByIdAndUpdate(params.id, requestData, {new: true});
+        const childAccount = await updateOneById<ChildAccount>('childaccounts',params.id, requestData);
         if (!childAccount) {
             return new Response(null, {
                 status: 404,

@@ -28,9 +28,10 @@ export default function ChildDashboard() {
 
     useEffect(() => {
         if(!user) return;
-        setChildAccount(user as ChildAccount);
+        const tempChildAccount = user as ChildAccount;
+        setChildAccount(tempChildAccount as ChildAccount);
         // Calculate daily earnings
-        const earnings = calculateDailyEarnings(childAccount!.balance, childAccount!.interest / 100);
+        const earnings = calculateDailyEarnings(tempChildAccount.balance, tempChildAccount.interest / 100);
         // Save that to be displayed
         setDailyEarnings(earnings);
     }, [user]);

@@ -14,17 +14,19 @@ export default function ParentDashboard() {
 	const client = useContext(ClientContext) as unknown as IClient
 
 	const handleCreateChildAccount = async (child: ChildAccount) => {
-		const newAccount = await client.addChildUser(child);
-		if(!newAccount) return;
-		setChildAccounts([...childAccounts, newAccount]);
+		const newChildAccount = await client.addChildUser(child);
+		if(!newChildAccount) return;
+		setChildAccounts([...childAccounts, newChildAccount]);
 		setIsDialogOpen(false);
 	};
 
 	const {user} = useContext(AuthContext)!
 	useEffect(()=>{
 		if (user && user._id) {
+			console.log('getting child accounts');
 			client.getChildAccounts(user._id)
 				.then((childAccounts:ChildAccount[]|null) => {
+					console.log(`childAccounts found: ${JSON.stringify(childAccounts)}`);
 					if(childAccounts)
 						setChildAccounts(childAccounts);
 				});

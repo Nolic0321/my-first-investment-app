@@ -10,7 +10,7 @@ export default function Dashboard() {
 
 	const renderUserStatus = user
 	?	<div>
-			{"balance" in user ? <ChildDashboard/> : <ParentDashboard/>}
+			{user.isChildAccount ? <ChildDashboard/> : <ParentDashboard/>}
 		</div>
 
 	:	<div className={"xl:w-1/3 sm:w-full"}>

@@ -1,10 +1,9 @@
-import {dbConnect} from "../routeHelper";
-import User from "@models/user";
+import {IUser} from "@models/user";
+import {findMany, insertOne} from "@mongoDataApiHelper";
 
-dbConnect();
 export const GET = async () => {
     try{
-        const users = await User.find({});
+        const users = await findMany<IUser>('users',{});
         return Response.json(users);
     }catch (error){
         return new Response(null,{
@@ -17,7 +16,7 @@ export const GET = async () => {
 export const POST = async(req: Request) =>{
     try {
         const requestData = await req.json();
-        const user = await User.create(requestData);
+        const user = await insertOne<IUser>('users',requestData as IUser);
         return Response.json(user);
     } catch (error) {
         return new Response(null, {

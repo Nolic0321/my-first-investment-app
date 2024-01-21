@@ -21,6 +21,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
     const {user} = useContext(AuthContext)!;
     const handleOnCreate = () => {
         const child: ChildAccount = {
+            isChildAccount: true,
             displayName,
             username,
             password,

@@ -1,10 +1,8 @@
-import Users, {IUser} from "@models/user";
-import {dbConnect} from "../../routeHelper";
-
-dbConnect();
+import {IUser} from "@models/user";
+import {findById, updateOneById} from "@mongoDataApiHelper";
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
     try {
-        const user = await Users.findById(params.id); // Replace 'UserSchema' with your actual User schema
+        const user = await findById<IUser>('users',params.id); // Replace 'UserSchema' with your actual User schema
         if (!user) {
             return new Response(null, {
                 status: 404,
@@ -24,14 +22,14 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
 export const PATCH = async (req: Request, {params}: { params: { id: string } }) => {
     try {
         const userData = await req.json() as IUser; // Assuming the user ID is passed as a URL parameter
-        const user = await Users.findByIdAndUpdate(params.id, userData, {new: true}); // The 'new' option returns the updated document
-        if (!user) {
+        const userId = await updateOneById('users',params.id, userData); // The 'new' option returns the updated document
+        if (!userId) {
             return new Response(null, {
                 status: 404,
                 statusText: 'User not found'
             });
         }
-        return Response.json(user);
+        return Response.json(userData);
     } catch (error) {
         return new Response(null, {
             status: 500,

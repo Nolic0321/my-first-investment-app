@@ -12,18 +12,21 @@ export const mockChildren: ChildAccount[] = [
 ];
 export const mockUsers: IUser[] = [
     {_id: "1", username: 'parent1', password: 'pass123', displayName: 'Parent One'},
-    ...mockChildren,
+    {_id: "2", username: 'child1', password: 'pass123', displayName: 'Child 1', isChildAccount: true},
+    {_id: "123", username: 'child2', password: 'pass123', displayName: 'Child 2', isChildAccount: true}
 ];
 
 export const mockRequests: Transaction[] = []
 
 export default class MockClient implements IClient {
     constructor() {
+        console.log('creating mock client');
     }
 
-    async auth(userData: LoginData): Promise<IUser | null> {
+    async auth(userData: LoginData): Promise<IUser | ChildAccount | null> {
         const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);
-        return Promise.resolve(user || null);
+        const child = mockChildren.find(child => child.username === userData.username && child.password === userData.password);
+        return Promise.resolve({...user, ...child} as ChildAccount || null);
     }
 
     //User CRUD

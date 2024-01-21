@@ -6,6 +6,10 @@ import {ChildAccount} from "@models/child-account";
 import {Transaction} from "@models/transaction";
 
 export default class MongoDbClient implements IClient {
+    constructor() {
+        console.log('creating mongo client')
+    }
+
     async auth(userData: LoginData, options?: Option | undefined): Promise<IUser | null> {
         try {
             const response = await this.post(`/api/auth`, userData);
@@ -68,7 +72,7 @@ export default class MongoDbClient implements IClient {
 
     async getChildAccounts(parentId: string, options?: Option | undefined): Promise<ChildAccount[]|null> {
         try{
-            const response = await this.get(`/api/childaccount`, {parentId: parentId});
+            const response = await this.get(`/api/parent/childaccount/${parentId}`);
             return response as ChildAccount[];
         } catch (e) {
             console.log(e);
@@ -102,6 +106,7 @@ export default class MongoDbClient implements IClient {
 
     private async get(url: string, body?: any, headers?: any) {
         try {
+            console.log(`fetching GET ${url}`);
             const response = await fetch(url, {
                 method: 'GET',
                 body: JSON.stringify(body),
@@ -155,4 +160,6 @@ export default class MongoDbClient implements IClient {
             return null;
         }
     }
+
+
 }
