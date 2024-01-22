@@ -12,6 +12,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@types/mongoose": "^5.11.97",
+    "@vercel/analytics": "^1.1.2",
     "@vercel/speed-insights": "^1.0.4",
     "dotenv": "^16.3.1",
     "mongoose": "^8.0.4",
