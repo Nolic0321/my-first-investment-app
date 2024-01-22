@@ -1,9 +1,16 @@
 import mongoose from "mongoose";
 
 export interface Transaction {
-    id: string;
+    _id?: any;
     amount: number;
     date: Date;
     childId: string;
     reason: string;
+    approved: ApprovalStatus
+}
+
+export enum ApprovalStatus {
+    Pending,
+    Approved,
+    Rejected
 }

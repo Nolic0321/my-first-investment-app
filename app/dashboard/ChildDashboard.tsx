@@ -1,10 +1,9 @@
 import {useContext, useEffect, useState} from "react";
 import Button from "../components/Button";
-import {guid} from "../helper-functions";
 import {ClientContext} from "@contexts/ClientContext";
 import LabelledInput from "../components/LabeledInput";
 import {ChildAccount} from "@models/child-account";
-import {Transaction} from "@models/transaction";
+import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";
 import {AuthContext} from "@contexts/AuthContext";
 import IClient from "@models/client";
@@ -39,7 +38,7 @@ export default function ChildDashboard() {
     useEffect(() => {
         const fetchPendingRequests = async () => {
             try {
-                const requests = await client.getPendingRequests(childAccount?._id!);
+                const requests = await client.getPendingRequestsForChild(childAccount?._id!);
                 setPendingRequests(requests);
             } catch (error) {
                 console.log(error);
@@ -53,9 +52,9 @@ export default function ChildDashboard() {
         const newRequest: Transaction = {
             amount: Number(requestAmount),
             date: new Date(),
-            id: guid(),
             childId: childAccount?._id!,
-            reason: requestReason
+            reason: requestReason,
+            approved: ApprovalStatus.Pending
         }
         // Send request to backend
         try {

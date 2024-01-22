@@ -20,17 +20,17 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
     }
 }
 
-export const PATCH = async (req: Request, {params}: { params: { id: string } }) => {
+export const PUT = async (req: Request, {params}: { params: { id: string } }) => {
     try {
         const requestData = await req.json() as IUser;
-        const childAccount = await updateOneById<ChildAccount>('childaccounts',params.id, requestData);
-        if (!childAccount) {
+        const updateOneResponse = await updateOneById<ChildAccount>('childaccounts',params.id, requestData);
+        if (!updateOneResponse) {
             return new Response(null, {
                 status: 404,
                 statusText: 'User not found'
             });
         }
-        return Response.json(childAccount);
+        return Response.json(updateOneResponse);
     } catch (error) {
         return new Response(null, {
             status: 500,

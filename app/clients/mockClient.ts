@@ -2,7 +2,7 @@ import IClient from '@models/client';
 import {LoginData} from "@contexts/AuthContext";
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
-import {Transaction} from "@models/transaction";
+import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";
 
 
@@ -39,15 +39,15 @@ export default class MockClient implements IClient {
         return Promise.resolve(mockUsers);
     }
 
-    updateUser(user: IUser): Promise<IUser|null>{
+    updateChildAccount(user: IUser): Promise<IUser|null>{
         const userIndex = mockUsers.findIndex(u => u._id === user._id);
         mockUsers[userIndex] = user;
         return Promise.resolve(user);
     }
 
-    addUser(userData: IUser): Promise<void>{
+    addUser(userData: IUser): Promise<IUser | void>{
         mockUsers.push(userData);
-        return Promise.resolve();
+        return Promise.resolve(userData);
     }
 
     //Child CRUD
@@ -68,14 +68,21 @@ export default class MockClient implements IClient {
     }
 
     //Transaction CRUD
-    getPendingRequests(userId: string, options?: Option): Promise<Transaction[]> {
+    getPendingRequestsForChild(userId: string, options?: Option): Promise<Transaction[]> {
         return new Promise((resolve, reject) => {
             if (options?.error) reject(new Error(options.error));
             const child = mockChildren.find(child => child._id === userId);
-            const parent = mockUsers.find(user => user._id === userId);
-            if (!child && !parent) reject(new Error(`User with id ${userId} not found`));
-            if (child) resolve(mockRequests.filter(request => request.childId === child._id))
-            if (parent) resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === userId).map(child => child._id).includes(request.childId)));
+            if (!child) reject(new Error(`User with id ${userId} not found`));
+            if (child) resolve(mockRequests.filter(request => request.childId === child._id && request.approved !== ApprovalStatus.Rejected))
+        });
+    }
+
+    getPendingRequestsForParent(parentUserId: string, options?: Option): Promise<Transaction[]> {
+        return new Promise((resolve, reject) => {
+            if (options?.error) reject(new Error(options.error));
+            const parent = mockUsers.find(user => user._id === parentUserId);
+            if (!parent) reject(new Error(`User with id ${parentUserId} not found`));
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentUserId).map(child => child._id).includes(request.childId)  && request.approved !== ApprovalStatus.Rejected));
         });
     }
 
@@ -96,14 +103,14 @@ export default class MockClient implements IClient {
         return new Promise((resolve, reject) => {
             if (options?.error) reject(new Error(options.error));
             //Find the transaction in the mockRequests array
-            const transactionIndex = mockRequests.findIndex(request => request.id === transaction.id);
+            const transactionIndex = mockRequests.findIndex(request => request._id === transaction._id);
             //If it's not found, reject
-            if (transactionIndex === -1) reject(new Error(`Transaction with id ${transaction.id} not found`));
-            //Otherwise remove it from the mockRequests array
-            mockRequests.splice(transactionIndex, 1);
+            if (transactionIndex === -1) reject(new Error(`Transaction with id ${transaction._id} not found`));
+            const transactionToApprove = mockRequests[transactionIndex];
+            transactionToApprove.approved = ApprovalStatus.Approved;
             //Return the updated mockRequests array
             const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId)));
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved !== ApprovalStatus.Rejected));
         });
     }
 
@@ -111,14 +118,15 @@ export default class MockClient implements IClient {
         return new Promise((resolve, reject) => {
             if (options?.error) reject(new Error(options.error));
             //Find the transaction in the mockRequests array
-            const transactionIndex = mockRequests.findIndex(request => request.id === transaction.id);
+            const transactionIndex = mockRequests.findIndex(request => request._id === transaction._id);
             //If it's not found, reject
-            if (transactionIndex === -1) reject(new Error(`Transaction with id ${transaction.id} not found`));
+            if (transactionIndex === -1) reject(new Error(`Transaction with id ${transaction._id} not found`));
             //Otherwise remove it from the mockRequests array
-            mockRequests.splice(transactionIndex, 1);
+            const transactionToReject = mockRequests[transactionIndex];
+            transactionToReject.approved = ApprovalStatus.Rejected;
             //Return the updated mockRequests array
             const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId)));
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved !== ApprovalStatus.Rejected));
         });
     }
 

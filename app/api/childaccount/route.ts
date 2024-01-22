@@ -8,19 +8,24 @@ export const POST = async (req: Request) =>{
         console.log(`api/childaccount POST: ${JSON.stringify(requestData)}`)
         const newChildAccountId = await insertOne<ChildAccount>("childaccounts",requestData as ChildAccount);
         if(!newChildAccountId){ throw new Error('Error creating child account');}
-        let childUser = await findOne<IUser>('users',{_id: {$oid: newChildAccountId}});
+        const updateChildAccountData = {
+            ...requestData,
+            _id: newChildAccountId.insertedId
+        }
+
+        let childUser = await findOne<IUser>('users',{_id: {$oid: newChildAccountId.insertedId}});
         if(!childUser){
             console.log('Child user not found; creating new user');
-            childUser = {
-                _id:{$oid: newChildAccountId},
+            const newChildUser:IUser = {
+                _id:{$oid: newChildAccountId.insertedId},
                 username: requestData.username,
                 password: requestData.password,
                 displayName: requestData.displayName,
                 isChildAccount: true
             };
-            await insertOne<IUser>('users',childUser);
+            await insertOne<IUser>('users',newChildUser);
         }
-        return Response.json(childUser);
+        return Response.json(updateChildAccountData);
     } catch (error) {
         return new Response(null, {
             status: 500,
@@ -31,11 +36,10 @@ export const POST = async (req: Request) =>{
 
 export const GET = async(req: Request) =>{
     try{
-        console.log('api/childaccount GET')
         const data = await req.json() as {parentId: string};
-        console.log(`api/childaccount GET: ${JSON.stringify(data)}`);
-        const users = await findOne<ChildAccount>('childaccounts',{parentId: data.parentId});
-        return Response.json(users);
+        const result = await findOne<ChildAccount>('childaccounts',{parentId: data.parentId});
+        if(!result?.document) throw new Error('Child account not found');
+        return Response.json(result?.document);
     }catch (error){
         return new Response(null,{
             status:500,

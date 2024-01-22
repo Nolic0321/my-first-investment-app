@@ -3,7 +3,7 @@ import {useContext, useEffect, useState} from "react";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import {ClientContext} from "@contexts/ClientContext";
 import {ChildAccount} from "@models/child-account";
-import {Transaction} from "@models/transaction";
+import {ApprovalStatus, Transaction} from "@models/transaction";
 import {AuthContext} from "@contexts/AuthContext";
 import IClient from "@models/client";
 
@@ -38,7 +38,7 @@ export default function ParentDashboard() {
 		const fetchPendingRequests = async () => {
 			try {
 				if(!user?._id) return;
-				const requests = await client.getPendingRequests(user!._id);
+				const requests = await client.getPendingRequestsForParent(user!._id);
 				setPendingRequests(requests);
 			} catch (error) {
 				console.log(error);
@@ -50,21 +50,22 @@ export default function ParentDashboard() {
 	},[client, user])
 
 	const getPendingRequestsForChild = (childId: string) => {
-		return pendingRequests.filter((request) => request.childId === childId);
+		if(!pendingRequests || !pendingRequests.length) return;
+		return pendingRequests?.filter((request) => request.childId === childId);
 	}
 
 	const onRequestApproval = async (request: Transaction) => {
 		try{
-			await client.approveRequest(request);
+			const remainingPendingRequests = await client.approveRequest({...request, approved: ApprovalStatus.Approved});
 			const updatedChildAccounts = childAccounts.map((child) => {
 				if (child._id === request.childId) {
 					child.balance -= request.amount;
 				}
-				client.updateUser(child);
+				client.updateChildAccount(child);
 				return child;
 			});
 			setChildAccounts(updatedChildAccounts);
-			setPendingRequests(pendingRequests.filter((transaction) => transaction.id !== request.id));
+			setPendingRequests(remainingPendingRequests);
 		} catch (error) {
 			console.log(error);
 		}
@@ -72,8 +73,8 @@ export default function ParentDashboard() {
 
 	const onRequestDenied = async (request: Transaction) => {
 		try{
-			await client.rejectRequest(request);
-			setPendingRequests(pendingRequests.filter((transaction) => transaction.id !== request.id));
+			const remainingPrendingRequests = await client.rejectRequest({...request, approved: ApprovalStatus.Rejected});
+			setPendingRequests(remainingPrendingRequests);
 		} catch (error) {
 			console.log(error);
 		}
@@ -88,8 +89,8 @@ export default function ParentDashboard() {
 					<div key={child._id}>
 						<div>{child.displayName}</div>
 						{/*<Button buttonText="Delete" className={'ml-4'} onButtonPressed={() => onDeletePressed(child.id)}/> to be implemented in issue #12*/}
-						{getPendingRequestsForChild(child._id!).map((request:Transaction) => (
-							<div  key={request.id} className={'my-4'}>
+						{getPendingRequestsForChild(child._id!)?.map((request:Transaction) => (
+							<div  key={request._id} className={'my-4'}>
 								<div>Request ${request.amount}</div>
 								<div>Reason: {request.reason}</div>
 								<div className={'inline-flex'}>

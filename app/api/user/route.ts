@@ -4,7 +4,7 @@ import {findMany, insertOne} from "@mongoDataApiHelper";
 export const GET = async () => {
     try{
         const users = await findMany<IUser>('users',{});
-        return Response.json(users);
+        return Response.json(users?.documents);
     }catch (error){
         return new Response(null,{
             status:500,
@@ -17,7 +17,7 @@ export const POST = async(req: Request) =>{
     try {
         const requestData = await req.json();
         const user = await insertOne<IUser>('users',requestData as IUser);
-        return Response.json(user);
+        return Response.json(requestData);
     } catch (error) {
         return new Response(null, {
             status: 500,

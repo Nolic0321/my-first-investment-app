@@ -4,6 +4,7 @@ import {Option} from "@models/option";
 import {IUser} from "@models/user";
 import {ChildAccount} from "@models/child-account";
 import {Transaction} from "@models/transaction";
+import {DeleteResponse, UpdateOneResponse} from "@mongoDataApiHelper";
 
 export default class MongoDbClient implements IClient {
     constructor() {
@@ -12,8 +13,7 @@ export default class MongoDbClient implements IClient {
 
     async auth(userData: LoginData, options?: Option | undefined): Promise<IUser | null> {
         try {
-            const response = await this.post(`/api/auth`, userData);
-            return {...response, userId: response._id} as IUser;
+            return await this.post<IUser | ChildAccount>(`/api/auth`, userData);
         } catch (e) {
             console.log(e);
             return null;
@@ -22,8 +22,7 @@ export default class MongoDbClient implements IClient {
 
     async getUser(userId: string, options?: Option | undefined): Promise<IUser | null> {
         try {
-            const response = await this.get(`/api/user/${userId}`);
-            return await response as IUser;
+            return await this.get<IUser>(`/api/user/${userId}`);
         } catch (e) {
             console.log(e);
             return null;
@@ -32,28 +31,29 @@ export default class MongoDbClient implements IClient {
 
     async getUsers(options?: Option | undefined): Promise<IUser[] | null> {
         try{
-            const response = await this.get(`/api/user`);
-            return response as IUser[];
+            return await this.get<IUser[]>(`/api/user`);
         } catch (e) {
             console.log(e);
             return null;
         }
     }
 
-    async updateUser(user: IUser, options?: Option | undefined): Promise<IUser|null> {
+    async updateChildAccount(user: IUser, options?: Option | undefined): Promise<IUser|null> {
         try{
-            const response = await this.patch(`/api/user/${user._id}`, user);
-            return response as IUser;
+            const response = await this.patch<UpdateOneResponse>(`/api/childaccount/${user._id}`, user);
+            if(response?.modifiedCount === 0) console.log('no user updated');
+            return user as IUser;
         } catch (e) {
             console.log(e);
             return null;
         }
     }
 
-    addUser(userData: IUser, options?: Option | undefined): Promise<void> {
+    addUser(userData: IUser, options?: Option | undefined): Promise<IUser|void> {
         try{
-            const response = this.post(`/api/user`, userData);
-            return response as Promise<void>;
+            const response = this.post<IUser>(`/api/user`, userData);
+            if(!response) return Promise.resolve();
+            return response as Promise<IUser>;
         }catch (e){
             console.log(e);
             return Promise.resolve();
@@ -62,8 +62,7 @@ export default class MongoDbClient implements IClient {
 
     async addChildUser(childData: ChildAccount, options?: Option | undefined): Promise<ChildAccount | null> {
         try{
-            const response = await this.post(`/api/childaccount`, childData);
-            return response as ChildAccount;
+            return await this.post<ChildAccount>(`/api/childaccount`, childData);
         } catch(e){
             console.log(e);
             return null;
@@ -72,8 +71,7 @@ export default class MongoDbClient implements IClient {
 
     async getChildAccounts(parentId: string, options?: Option | undefined): Promise<ChildAccount[]|null> {
         try{
-            const response = await this.get(`/api/parent/childaccount/${parentId}`);
-            return response as ChildAccount[];
+            return await this.get<ChildAccount[]>(`/api/parent/${parentId}/childaccount`);
         } catch (e) {
             console.log(e);
             return null;
@@ -81,30 +79,54 @@ export default class MongoDbClient implements IClient {
     }
 
     async getChildAccount(childUserId: string): Promise<ChildAccount> {
-        throw new Error("Method not implemented.");
+        try{
+            const response = await this.get<ChildAccount>(`/api/childaccount/${childUserId}`);
+            return response as ChildAccount;
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
     }
 
     async deleteChildAccount(childId: string, options?: Option | undefined): Promise<void> {
-        throw new Error("Method not implemented.");
+        try{
+            const response = await this.delete<DeleteResponse>(`/api/childaccount/${childId}`);
+            if(response?.deletedCount === 0) console.log('no user deleted');
+            return Promise.resolve();
+        } catch (e) {
+            console.log(e);
+            return Promise.resolve();
+        }
     }
 
     sendRequest(newRequest: Transaction, options?: Option | undefined): Promise<Transaction[]> {
-        throw new Error("Method not implemented.");
+            const response = this.post<Transaction[]>(`/api/childaccount/${newRequest.childId}/transactions`, newRequest);
+            return response as Promise<Transaction[]>;
     }
 
-    getPendingRequests(userId: string, options?: Option | undefined): Promise<Transaction[]> {
-        throw new Error("Method not implemented.");
+    getPendingRequestsForChild(userId: string, options?: Option | undefined): Promise<Transaction[]> {
+        console.log(`mongoDbClient.getPendingRequests(${userId})`);
+        const response = this.get<Transaction[]>(`/api/childaccount/${userId}/transactions`);
+        return response as Promise<Transaction[]>;
+    }
+
+    getPendingRequestsForParent(parentUserId: string, options?: Option): Promise<Transaction[]> {
+        console.log(`mongoDbClient.getPendingRequests(${parentUserId})`);
+        const response = this.get<Transaction[]>(`/api/parent/${parentUserId}/transactions`);
+        return response as Promise<Transaction[]>;
     }
 
     approveRequest(transaction: Transaction, options?: Option | undefined): Promise<Transaction[]> {
-        throw new Error("Method not implemented.");
+        const response = this.post<Transaction[]>(`/api/transactions/${transaction._id}/approve`, transaction);
+        return response as Promise<Transaction[]>;
     }
 
     rejectRequest(transaction: Transaction, options?: Option | undefined): Promise<Transaction[]> {
-        throw new Error("Method not implemented.");
+        const response = this.post<Transaction[]>(`/api/transactions/${transaction._id}/deny`, transaction);
+        return response as Promise<Transaction[]>;
     }
 
-    private async get(url: string, body?: any, headers?: any) {
+    private async get<T>(url: string, body?: any, headers?: any):Promise<T | null> {
         try {
             console.log(`fetching GET ${url}`);
             const response = await fetch(url, {
@@ -119,7 +141,7 @@ export default class MongoDbClient implements IClient {
         }
     }
 
-    private async post(url: string, body?: any, headers?: any) {
+    private async post<T>(url: string, body?: any, headers?: any):Promise<T | null> {
         try{
             const response = await fetch(url,{
                 method: 'POST',
@@ -133,7 +155,7 @@ export default class MongoDbClient implements IClient {
         }
     }
 
-    private async put(url:string, body?:any, headers?:any){
+    private async put<T>(url:string, body?:any, headers?:any): Promise<T | null>{
         try{
             const response = await fetch(url,{
                 method: 'PUT',
@@ -147,10 +169,24 @@ export default class MongoDbClient implements IClient {
         }
     }
 
-    private async patch(url:string, body?:any, headers?:any){
+    private async patch<T>(url:string, body?:any, headers?:any):Promise<T | null>{
         try{
             const response = await fetch(url,{
                 method: 'PUT',
+                body: JSON.stringify(body),
+                headers: headers
+            });
+            return await response.json();
+        }catch (e){
+            console.log(e);
+            return null;
+        }
+    }
+
+    private async delete<T>(url:string, body?:any, headers?:any):Promise<T | null>{
+        try{
+            const response = await fetch(url,{
+                method: 'DELETE',
                 body: JSON.stringify(body),
                 headers: headers
             });
