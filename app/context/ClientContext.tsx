@@ -19,6 +19,9 @@ export const ClientProvider: React.FC<ClientProviderProps> = React.memo(({ child
         .then(data => {
             const newClient = GetClient(data as ClientType);
             setClient(newClient);
+        })
+        .catch(error => {
+            console.log(error);
         });
   }, []);
 
