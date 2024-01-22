@@ -1,14 +1,15 @@
 import React, {useContext, useState} from "react";
-import {Child} from "../models/types";
 import {Dialog} from "@headlessui/react";
-import Button from "../components/Button";
-import LabelledInput from "../components/Labeled Input";
-import {UserContext} from "../context/UserContext";
+import Button from "@components/Button";
+import LabelledInput from "@components/LabeledInput";
+import {ChildAccount} from "@models/child-account";
+import {AuthContext} from "@contexts/AuthContext";
+import {guid} from "../helper-functions";
 
 interface CreateChildAccountDialogProps {
     isOpen: boolean;
     onRequestClose: () => void;
-    onCreateChildAccount: (child: Child) => void;
+    onCreateChildAccount: (child: ChildAccount) => void;
 }
 
 export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> = ({isOpen, onRequestClose, onCreateChildAccount}) => {
@@ -17,16 +18,16 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
     const [password, setPassword] = useState("");
     const [startingBalance, setStartingBalance] = useState(0);
     const [interest, setInterest] = useState(0);
-    const {user} = useContext(UserContext);
+    const {user} = useContext(AuthContext)!;
     const handleOnCreate = () => {
-        const child: Child = {
-            id: "newid",
+        const child: ChildAccount = {
+            isChildAccount: true,
             displayName,
             username,
             password,
             balance: startingBalance,
             interest,
-            parentId: user?.id??"" // This should be set to the current user's id
+            parentId: user?._id??"" // This should be set to the current user's id
         };
         onCreateChildAccount(child);
     };

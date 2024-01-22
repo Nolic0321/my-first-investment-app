@@ -1,19 +1,19 @@
 'use client'
 import {useContext, useState} from "react";
 import Button from "./Button";
-import {AuthContext, LoginData} from "../context/AuthContext";
+import {AuthContext, LoginData} from "@contexts/AuthContext";
 export default function Login() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const authContext = useContext(AuthContext);
 	const [loginFailed, setLoginFailed] = useState(false);
-	const login = () => {
+	const login = async () => {
 		if(authContext){
 			const credentials: LoginData = {
 				username: username,
 				password: password
 			}
-			setLoginFailed(!authContext.login(credentials));
+			setLoginFailed(!(await authContext.login(credentials)));
 		}
 	}
 
@@ -41,7 +41,7 @@ export default function Login() {
 					onChange={(e) => setPassword(e.target.value)}
 				/>
 			</div>
-			{loginFailed ? <div className={"text-red-500"}>Login Failed</div> : null}
+			<div className={"text-red-500"}>{loginFailed?"Login Failed":""}</div>
 			<Button className={"my-4"} buttonText="Login" onButtonPressed={login}/>
 		</div>
 	);

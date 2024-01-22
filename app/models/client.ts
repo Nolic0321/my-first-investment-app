@@ -1,31 +1,29 @@
-import {LoginData} from "../context/AuthContext";
-import {Child, Option, Transaction, User} from "./types";
-import MockClient from "./mockClient";
+import {LoginData} from "@contexts/AuthContext";
+import {Option} from "@models/option";
+import {ChildAccount} from "@models/child-account";
+import {Transaction} from "@models/transaction";
+import {IUser} from "@models/user";
 
 export default interface IClient {
+    auth(userData: LoginData, options?:Option): Promise<IUser | null>;
+
     //User CRUD
-    getUser(userData: LoginData, options?:Option): User | null;
-    getUsers(options?:Option): User[];
-    updateUser(child: Child, options?:Option): void;
-    addUser(userData: User, options?:Option): void;
+    getUser(userId: string, options?:Option): Promise<IUser | null>;
+    getUsers(options?:Option): Promise<IUser[]|null>;
+    addUser(userData: IUser, options?:Option): Promise<IUser | void>;
 
     //Child CRUD
-    addChildUser(childData: Child, options?:Option): void;
-    getChildAccounts(parentId: string, options?:Option): Child[];
-    deleteChildAccount(childId: string, options?:Option): void;
+    addChildUser(childData: ChildAccount, options?:Option): Promise<ChildAccount | null>;
+    updateChildAccount(child: IUser, options?:Option): Promise<IUser | null>;
+    deleteChildAccount(childId: string, options?:Option): Promise<void>;
+    getChildAccount(childUserId: string): Promise<ChildAccount>;
+    getChildAccounts(parentId: string, options?:Option): Promise<ChildAccount[]|null>;
 
     //Transaction CRUD
     sendRequest(newRequest: Transaction, options?:Option): Promise<Transaction[]>;
-    getPendingRequests(userId: string, options?:Option): Promise<Transaction[]>;
+    getPendingRequestsForChild(childUserId: string, options?:Option): Promise<Transaction[]>;
+    getPendingRequestsForParent(parentUserId: string, options?:Option): Promise<Transaction[]>;
     approveRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
     rejectRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
 
-}
-
-export function create(environment: string):IClient{
-    if(environment === "mock"){
-        return new MockClient();
-    } else {
-        throw new Error("Invalid environment");
-    }
 }

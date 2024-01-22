@@ -23,6 +23,7 @@
       "@models/*": ["./app/models/*"],
       "@contexts/*": ["./app/context/*"],
       "@hooks/*": ["./app/hooks/*"],
+      "@mongoDataApiHelper": ["./app/api/mongoDataAPIHelper"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

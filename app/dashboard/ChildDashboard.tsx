@@ -1,11 +1,12 @@
 import {useContext, useEffect, useState} from "react";
-import {UserContext} from "../context/UserContext";
-import {Child, Option, Transaction} from "../models/types";
 import Button from "../components/Button";
-import {guid} from "../models/helperFunctions";
-import {ClientContext} from "../context/ClientContext";
-import IClient from "../models/client";
-import LabelledInput from "../components/Labeled Input";
+import {ClientContext} from "@contexts/ClientContext";
+import LabelledInput from "../components/LabeledInput";
+import {ChildAccount} from "@models/child-account";
+import {ApprovalStatus, Transaction} from "@models/transaction";
+import {Option} from "@models/option";
+import {AuthContext} from "@contexts/AuthContext";
+import IClient from "@models/client";
 
 const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): number => {
     const dailyInterestRate = yearlyInterestRate / 365;
@@ -13,8 +14,8 @@ const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): nu
 };
 
 export default function ChildDashboard() {
-    const userContext = useContext(UserContext);
-    const {user} = userContext as unknown as { user: Child, updateUser: (updatedUser: Child) => void };
+    const {user} = useContext(AuthContext)!;
+    const [childAccount, setChildAccount] = useState<ChildAccount | null>(null);
     const [dailyEarnings, setDailyEarnings] = useState(0);
     const [pretendSpent, setPretendSpent] = useState("");
     const [pretendAdded, setPretendAdded] = useState("");
@@ -25,16 +26,19 @@ export default function ChildDashboard() {
     const client = useContext(ClientContext) as unknown as IClient;
 
     useEffect(() => {
+        if(!user) return;
+        const tempChildAccount = user as ChildAccount;
+        setChildAccount(tempChildAccount as ChildAccount);
         // Calculate daily earnings
-        const earnings = calculateDailyEarnings(user.balance, user.interest / 100);
+        const earnings = calculateDailyEarnings(tempChildAccount.balance, tempChildAccount.interest / 100);
         // Save that to be displayed
         setDailyEarnings(earnings);
-    }, [user.balance, user.interest]);
+    }, [user]);
 
     useEffect(() => {
         const fetchPendingRequests = async () => {
             try {
-                const requests = await client.getPendingRequests(user.id);
+                const requests = await client.getPendingRequestsForChild(childAccount?._id!);
                 setPendingRequests(requests);
             } catch (error) {
                 console.log(error);
@@ -42,15 +46,15 @@ export default function ChildDashboard() {
         };
 
         fetchPendingRequests();
-    }, [client, user.id]);
+    }, [client, childAccount]);
 
     const onRequestSubmit = async () => {
         const newRequest: Transaction = {
             amount: Number(requestAmount),
             date: new Date(),
-            id: guid(),
-            childId: user.id,
-            reason: requestReason
+            childId: childAccount?._id!,
+            reason: requestReason,
+            approved: ApprovalStatus.Pending
         }
         // Send request to backend
         try {
@@ -63,21 +67,21 @@ export default function ChildDashboard() {
         setRequestAmount("");
         setRequestReason("");
     };
-    if (user) {
+    if (childAccount) {
         return (
             <div className={'flex-col w-full'}>
-                <h1>Hello {user.displayName}</h1>
+                <h1>Hello {childAccount.displayName}</h1>
                 <br/>
                 <div className="prose bg-white px-4 py-5 sm:px-6 text-black rounded-2xl mb-2 text-lg font-bold max-w-none">
                     <h2 className={'border-b border-gray-200 font-semibold leading-6 text-gray-900 pb-2'}>Account Balance</h2>
                     {pendingRequests?.length > 0
                         ? <div>
                             <div>Your current balance is</div>
-                            <div>${user.balance - pendingRequests.reduce((total, transaction) => total + transaction.amount, 0)} (${user.balance.toFixed(2)})</div>
+                            <div>${childAccount.balance - pendingRequests.reduce((total, transaction) => total + transaction.amount, 0)} (${childAccount.balance.toFixed(2)})</div>
                         </div>
                         : <div>
                             <div>Your current balance is</div>
-                            <div>${user.balance.toFixed(2)}</div>
+                            <div>${childAccount.balance.toFixed(2)}</div>
                         </div>}
 
                     <div className={'mt-4'}>Today your money made you</div>
@@ -90,19 +94,19 @@ export default function ChildDashboard() {
                         <div className={"w-full mb-4"}>
                             <LabelledInput className={'rounded-b-none '} label={"If I spend"} inputText={pretendSpent.toString()} onInputChanged={setPretendSpent} headerDisplay={"$"}
                                            placeholder={"Enter amount here"}/>
-                            <LabelledInput className={'rounded-none '} label={"then my account will have"} inputText={(user.balance - Number(pretendSpent)).toString()} onInputChanged={() => {
+                            <LabelledInput className={'rounded-none '} label={"then my account will have"} inputText={(childAccount.balance - Number(pretendSpent)).toString()} onInputChanged={() => {
                             }} disabled={true} headerDisplay={"$"}/>
                             <LabelledInput className={'rounded-t-none '} label={"everyday my money would create "}
-                                           inputText={calculateDailyEarnings(user.balance - Number(pretendSpent), user.interest / 100).toFixed(2)} onInputChanged={() => {
+                                           inputText={calculateDailyEarnings(childAccount.balance - Number(pretendSpent), childAccount.interest / 100).toFixed(2)} onInputChanged={() => {
                             }} disabled={true} headerDisplay={"$"}/>
                         </div>
                         <div className={'w-full lg:ml-2'}>
                             <LabelledInput className={'rounded-b-none'} label={"If I save"} inputText={pretendAdded.toString()} onInputChanged={setPretendAdded} headerDisplay={"$"}
                                            placeholder={"Enter amount here"}/>
-                            <LabelledInput className={'rounded-none'} label={"then my account will have"} inputText={(user.balance + Number(pretendAdded)).toString()} onInputChanged={() => {
+                            <LabelledInput className={'rounded-none'} label={"then my account will have"} inputText={(childAccount.balance + Number(pretendAdded)).toString()} onInputChanged={() => {
                             }} disabled={true} headerDisplay={"$"}/>
                             <LabelledInput className={'rounded-t-none'} label={"everyday my money would create "}
-                                           inputText={calculateDailyEarnings(user.balance + Number(pretendAdded), user.interest / 100).toFixed(2)} onInputChanged={() => {
+                                           inputText={calculateDailyEarnings(childAccount.balance + Number(pretendAdded), childAccount.interest / 100).toFixed(2)} onInputChanged={() => {
                             }} disabled={true} headerDisplay={"$"}/>
                         </div>
                     </div>

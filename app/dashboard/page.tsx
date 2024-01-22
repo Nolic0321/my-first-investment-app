@@ -1,16 +1,16 @@
 'use client'
 import {useContext} from "react";
-import {UserContext} from "../context/UserContext";
 import Login from "../components/Login";
 import ChildDashboard from "./ChildDashboard";
 import ParentDashboard from "./ParentDashboard";
+import {AuthContext} from "@contexts/AuthContext";
 
 export default function Dashboard() {
-	const {user} = useContext(UserContext);
+	const {user} = useContext(AuthContext)!;
 
 	const renderUserStatus = user
 	?	<div>
-			{"balance" in user ? <ChildDashboard/> : <ParentDashboard/>}
+			{user.isChildAccount ? <ChildDashboard/> : <ParentDashboard/>}
 		</div>
 
 	:	<div className={"xl:w-1/3 sm:w-full"}>
