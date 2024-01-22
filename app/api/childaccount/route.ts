@@ -1,7 +1,6 @@
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {findOne, insertOne} from "@mongoDataApiHelper";
-import {ObjectId} from "mongodb";
 export const POST = async (req: Request) =>{
     try {
         const requestData = await req.json();
