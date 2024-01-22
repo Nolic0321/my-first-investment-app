@@ -1,4 +1,3 @@
-import {ObjectId} from "mongodb";
 
 export interface IUser {
     _id?: any;
