@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import mongoose from 'mongoose';
 import {ClientType} from "../../enums/clientType";
 
 export const GET = async () => {
@@ -15,7 +14,6 @@ export const GET = async () => {
         case 'test':
         case "production":
             console.log(`using mongo client`);
-            await mongoose.connect(process.env.MONGODB_URI as string);
             return new Response(ClientType.Mongo);
         default:
             console.log(`environment not found`);
