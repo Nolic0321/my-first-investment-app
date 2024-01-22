@@ -1,4 +1,4 @@
-# Project Title: Child's Investment App
+# My First Investment App
 
 ## Description
 
