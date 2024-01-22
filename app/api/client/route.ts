@@ -7,6 +7,7 @@ export const GET = async () => {
     switch (process.env.ENVIRONMENT) {
         case "mock":
             return new Response(ClientType.Mock);
+        case 'preview':
         case 'dev':
         case 'test':
         case "production":
