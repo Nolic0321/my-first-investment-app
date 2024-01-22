@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 
 export interface Transaction {
     _id?: any;
