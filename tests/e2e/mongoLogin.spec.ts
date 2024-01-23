@@ -13,5 +13,5 @@ test('mongoLogin', async ({page}) => {
     await expect(page.getByText('Welcome to the dashboard')).toBeVisible();
     await expect(page.getByText('Create Child Account')).toBeVisible();
     await expect(page.getByText('Logout')).toBeVisible();
-
+    await expect(page.getByText('First Mongo Child')).toBeVisible();
 });
