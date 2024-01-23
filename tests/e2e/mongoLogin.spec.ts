@@ -12,6 +12,6 @@ test('mongoLogin', async ({page}) => {
     await page.getByRole('button', { name: 'Login' }).click();
     await expect(page.getByText('Welcome to the dashboard')).toBeVisible();
     await expect(page.getByText('Create Child Account')).toBeVisible();
-    await expect(page.getByText('Logout')).not.toBeVisible();
+    await expect(page.getByText('Logout')).toBeVisible();
 
 });
