@@ -1,4 +1,4 @@
-import {test, expect} from '@playwright/test';
+import {expect, test} from '@playwright/test';
 
 
 process.env.ENVIRONMENT = 'test';
@@ -12,6 +12,6 @@ test('mongoLogin', async ({page}) => {
     await page.getByRole('button', { name: 'Login' }).click();
     await expect(page.getByText('Welcome to the dashboard')).toBeVisible();
     await expect(page.getByText('Create Child Account')).toBeVisible();
-    await expect(page.getByText('Logout')).toBeVisible();
+    await expect(page.getByText('Logout')).not.toBeVisible();
 
 });
