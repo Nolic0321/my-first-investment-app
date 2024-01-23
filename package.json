@@ -10,8 +10,7 @@
     "test": "jest",
     "test:e2e": "playwright test",
     "test:watch": "jest --watchAll",
-    "test:coverage": "jest --coverage",
-    "test:watch:coverage": "jest --watchAll --coverage"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",
