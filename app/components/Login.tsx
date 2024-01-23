@@ -41,7 +41,7 @@ export default function Login() {
 					onChange={(e) => setPassword(e.target.value)}
 				/>
 			</div>
-			<div className={"text-red-500"}>{loginFailed?"Login Failed":""}</div>
+			{loginFailed ? <div className={"text-red-500"}>Login Failed</div>:null}
 			<Button className={"my-4"} buttonText="Login" onButtonPressed={login}/>
 		</div>
 	);
