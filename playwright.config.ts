@@ -1,6 +1,8 @@
-import { PlaywrightTestConfig} from "playwright/test";
+import {PlaywrightTestConfig} from "playwright/test";
+
 const config: PlaywrightTestConfig = {
-    testDir: 'tests'
+    testDir: 'tests',
+    workers: 3
 }
 
 export default config;
