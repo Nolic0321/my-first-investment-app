@@ -1,5 +1,6 @@
 import {Route} from 'playwright';
 import { ClientType } from '../../app/enums/clientType';
+
 export const performLogin = async (page:any, username:string, password:string) => {
     await page.goto('http://localhost:3000/');
     await page.getByRole('link', { name: 'Dashboard' }).click();
@@ -10,7 +11,6 @@ export const performLogin = async (page:any, username:string, password:string) =
     await page.getByRole('button', { name: 'Login' }).click();
 };
 export const loginAsMockParent = async (page:any) => {
-    await configMockEnvironment(page);
     await performLogin(page, 'parent1', 'pass123');
 }
 

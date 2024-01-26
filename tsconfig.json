@@ -25,6 +25,7 @@
       "@contexts/*": ["./app/context/*"],
       "@hooks/*": ["./app/hooks/*"],
       "@mongoDataApiHelper": ["./app/api/mongoDataAPIHelper"],
+      "@playwrightHelpers": ["./tests/e2e/helperFunctions"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
