@@ -25,23 +25,23 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
 
         //Check that input fields exist
         const displayNameInput = page.getByLabel('Display Name');
-        expect(displayNameInput).toBeVisible();
+        await expect(displayNameInput).toBeVisible();
         expect(displayNameInput).toHaveValue('');
 
         const usernameInput = page.getByLabel('Username');
-        expect(usernameInput).toBeVisible();
+        await expect(usernameInput).toBeVisible();
         expect(await usernameInput.inputValue()).toBe('');
 
         const passwordInput = page.getByLabel('Password');
-        expect(passwordInput).toBeVisible();
+        await expect(passwordInput).toBeVisible();
         expect(await passwordInput.inputValue()).toBe('');
 
         const startingBalanceInput = page.getByLabel('Starting Balance');
-        expect(startingBalanceInput).toBeVisible();
+        await expect(startingBalanceInput).toBeVisible();
         expect(await startingBalanceInput.inputValue()).toBe("0");
 
         const interestRateInput = page.getByLabel('Interest');
-        expect(interestRateInput).toBeVisible();
+        await expect(interestRateInput).toBeVisible();
         expect(await interestRateInput.inputValue()).toBe('');
 
 

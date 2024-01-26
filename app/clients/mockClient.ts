@@ -4,6 +4,7 @@ import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";
+import { guid } from '../helper-functions';
 
 
 export const mockChildren: ChildAccount[] = [
@@ -52,6 +53,7 @@ export default class MockClient implements IClient {
 
     //Child CRUD
     async addChildUser(childData: ChildAccount): Promise<ChildAccount| null> {
+        childData._id = guid();
         mockUsers.push(childData);
         mockChildren.push(childData);
         return Promise.resolve(childData);

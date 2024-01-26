@@ -1,7 +1,7 @@
 import {expect, test} from '@playwright/test';
 import {configMockEnvironment, configMongoEnvironment, loginAsMockParent, loginAsMongoChild, loginAsMongoParent} from "@playwrightHelpers";
 
-test.describe('Mongo Client - Parent - Login', ()=>{  
+test.describe('Mongo Login', ()=>{  
     test.beforeEach(async ({page}) => {
         await configMongoEnvironment(page);
         await loginAsMongoParent(page);

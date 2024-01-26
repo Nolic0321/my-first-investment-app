@@ -25,26 +25,36 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
 
         //Check that input fields exist
         const displayNameInput = page.getByLabel('Display Name');
-        expect(displayNameInput).toBeVisible();
+        await expect(displayNameInput).toBeVisible();
         expect(displayNameInput).toHaveValue('');
 
         const usernameInput = page.getByLabel('Username');
-        expect(usernameInput).toBeVisible();
+        await expect(usernameInput).toBeVisible();
         expect(await usernameInput.inputValue()).toBe('');
 
         const passwordInput = page.getByLabel('Password');
-        expect(passwordInput).toBeVisible();
+        await expect(passwordInput).toBeVisible();
         expect(await passwordInput.inputValue()).toBe('');
 
         const startingBalanceInput = page.getByLabel('Starting Balance');
-        expect(startingBalanceInput).toBeVisible();
+        await expect(startingBalanceInput).toBeVisible();
         expect(await startingBalanceInput.inputValue()).toBe("0");
 
         const interestRateInput = page.getByLabel('Interest');
         expect(interestRateInput).toBeVisible();
         expect(await interestRateInput.inputValue()).toBe('');
+    });
 
+    test('should create a child account', async ({page, context}) => {
+        await page.getByRole('dialog');
 
+        await page.getByLabel('Display Name').fill('Test Child');
+        await page.getByLabel('Username').fill('testchild');
+        await page.getByLabel('Password').fill('password');
+        await page.getByLabel('Starting Balance').fill('100');
+        await page.getByLabel('Interest').fill('5');
+        await page.getByRole('button', {name: 'Create Account'}).click();
 
+        await expect(page.getByText('Test Child')).toBeVisible();
     });
 });
