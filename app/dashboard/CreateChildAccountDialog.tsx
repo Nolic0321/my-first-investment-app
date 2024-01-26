@@ -46,7 +46,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
                                 <LabelledInput name={'starting-balance'} label={"Starting Balance"} inputText={startingBalance.toString()} onInputChanged={(newInput) => setStartingBalance(parseInt(newInput))} placeholder={"100"} className={'rounded-none'}/>
                                 <LabelledInput name={'interest'} label={"Interest"} inputText={interest?interest.toString():""} onInputChanged={(newInput) => setInterest(parseInt(newInput))} placeholder={"5"} className={'rounded-t-none'} footerDisplay={"%"}/>
                             </div>
-                            <Button buttonText={'Create'} onButtonPressed={handleOnCreate}/>
+                            <Button buttonText={'Create Account'} onButtonPressed={handleOnCreate}/>
                         </div>
                     </Dialog.Panel>
                 </div>

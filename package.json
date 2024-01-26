@@ -12,7 +12,8 @@
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
     "playwright": "npx playwright test",
-    "playwright:watch": "nodemon --watch '*.ts' --exec \"npm run playwright\""
+    "playwright:watch": "nodemon --watch '*.ts' --exec \"npm run playwright\"",
+    "playwright:ui": "npx playwright test --ui"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.17",

@@ -17,7 +17,11 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
         // Wait for the dialog to be available
         await page.getByRole('dialog');
 
+        //Check that header exists
         expect(page.getByRole('heading',{name:'Create Child Account'})).toBeVisible();
+
+        //Check that button exists
+        expect(page.getByRole('button', {name: 'Create'})).toBeVisible();
 
         //Check that input fields exist
         const displayNameInput = page.getByLabel('Display Name');
@@ -40,7 +44,6 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
         expect(interestRateInput).toBeVisible();
         expect(await interestRateInput.inputValue()).toBe('');
 
-        expect(page.getByRole('button', {name: 'Create'})).toBeVisible();
 
 
     });
