@@ -112,7 +112,7 @@ export default class MockClient implements IClient {
             transactionToApprove.approved = ApprovalStatus.Approved;
             //Return the updated mockRequests array
             const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved !== ApprovalStatus.Rejected));
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved === ApprovalStatus.Pending));
         });
     }
 
@@ -128,7 +128,7 @@ export default class MockClient implements IClient {
             transactionToReject.approved = ApprovalStatus.Rejected;
             //Return the updated mockRequests array
             const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved !== ApprovalStatus.Rejected));
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved === ApprovalStatus.Pending));
         });
     }
 

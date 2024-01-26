@@ -2,7 +2,7 @@ import {Route} from 'playwright';
 import { ClientType } from '../../app/enums/clientType';
 
 export const performLogin = async (page:any, username:string, password:string) => {
-    await page.goto('http://localhost:3000/');
+    if(!page.url().includes('localhost:3000')) await page.goto('http://localhost:3000/');
     await page.getByRole('link', { name: 'Dashboard' }).click();
     await page.getByLabel('Username').click();
     await page.getByLabel('Username').fill(username);
@@ -27,6 +27,14 @@ export const loginAsMongoParent = async (page:any) => {
 export const loginAsMongoChild = async (page:any) => {
     await configMongoEnvironment(page);
     await performLogin(page, 'firstmongochild', 'pass123');
+}
+
+export const createMockChildRequest = async (page:any) => {
+    await loginAsMockChild(page);
+    await page.getByLabel('I want to spend', {exact:true}).fill('10');
+    await page.getByLabel('I want to spend this money because').fill('I want to test');
+    await page.getByRole('button',{name:'Request'}).click();
+    await page.waitForTimeout(500);
 }
 
 

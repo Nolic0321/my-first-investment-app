@@ -67,6 +67,12 @@ export default function ChildDashboard() {
         setRequestAmount("");
         setRequestReason("");
     };
+
+    const getReducedBalance = () =>{
+        if(!childAccount) return 0.00;
+        const pendingRequestTotal = pendingRequests.reduce((total, transaction) => total + transaction.amount, 0);
+        return (childAccount.balance - pendingRequestTotal).toFixed(2);
+    }
     if (childAccount) {
         return (
             <div className={'flex-col w-full'}>
@@ -77,7 +83,7 @@ export default function ChildDashboard() {
                     {pendingRequests?.length > 0
                         ? <div>
                             <div>Your current balance is</div>
-                            <div>$<span data-testid={'account-balance-diff'}>{childAccount.balance - pendingRequests.reduce((total, transaction) => total + transaction.amount, 0)}</span> ($<span data-testid='account-balance'>{childAccount.balance.toFixed(2)}</span>)</div>
+                            <div>$<span data-testid={'account-balance-diff'}>{getReducedBalance()}</span> ($<span data-testid='account-balance'>{childAccount.balance.toFixed(2)}</span>)</div>
                         </div>
                         : <div>
                             <div>Your current balance is</div>
