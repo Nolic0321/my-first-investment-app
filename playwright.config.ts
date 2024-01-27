@@ -2,7 +2,7 @@ import {devices, PlaywrightTestConfig} from "playwright/test";
 
 const config: PlaywrightTestConfig = {
     testDir: 'tests',
-    reporter: process.env.CI ? 'github' : 'list',
+    reporter: process.env.CI ? 'list' : 'list',
     workers: process.env.CI ? 4 : undefined,
     retries: 3,
     projects: [
