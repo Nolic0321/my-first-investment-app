@@ -90,8 +90,8 @@ export default function ParentDashboard() {
 						<div>{child.displayName}</div>
 						{/*<Button buttonText="Delete" className={'ml-4'} onButtonPressed={() => onDeletePressed(child.id)}/> to be implemented in issue #12*/}
 						{getPendingRequestsForChild(child._id!)?.map((request:Transaction) => (
-							<div  key={request._id} className={'my-4'}>
-								<div>Request ${request.amount}</div>
+							<div id={request._id}  key={request._id} className={'my-4'}>
+								<div  data-testid={request._id}>Request ${request.amount}</div>
 								<div>Reason: {request.reason}</div>
 								<div className={'inline-flex'}>
 									<Button buttonText="Approve" onButtonPressed={() => onRequestApproval(request)}/>

@@ -1,8 +1,11 @@
-import {Route} from 'playwright';
-import { ClientType } from '../../app/enums/clientType';
+import {Page, Route} from 'playwright';
+import {ClientType} from '../../app/enums/clientType';
+import {ApprovalStatus, Transaction} from "@models/transaction";
+import dotenv from "dotenv";
 
+dotenv.config();
 export const performLogin = async (page:any, username:string, password:string) => {
-    if(!page.url().includes('localhost:3000')) await page.goto('http://localhost:3000/');
+    if(!page.url().includes(process.env.PLAYWRIGHT_TEST_BASE_URL)) await page.goto(process.env.PLAYWRIGHT_TEST_BASE_URL);
     await page.getByRole('link', { name: 'Dashboard' }).click();
     await page.getByLabel('Username').click();
     await page.getByLabel('Username').fill(username);
@@ -31,6 +34,28 @@ export const loginAsMongoChild = async (page:any) => {
 
 export const createMockChildRequest = async (page:any) => {
     await loginAsMockChild(page);
+    await page.getByLabel('I want to spend', {exact:true}).fill('10');
+    await page.getByLabel('I want to spend this money because').fill('I want to test');
+    await page.getByRole('button',{name:'Request'}).click();
+    await page.waitForTimeout(500);
+}
+
+export const createMongoChildRequest = async (page:Page) => {
+    await loginAsMongoChild(page);
+    const testTransaction : Transaction = {
+        _id: 'test',
+        childId: '65ada4aaf492160c42729149',
+        approved: ApprovalStatus.Pending,
+        amount: 10,
+        date: new Date(),
+        reason: 'Playwright Test'
+    }
+    await page.route('**/api/childaccount/*/transactions', async (route: Route) => {
+        await route.fulfill({status:200, body:JSON.stringify([testTransaction])});
+    });
+    await page.route('**/api/parent/*/transactions', async (route: Route) => {
+        await route.fulfill({status:200, body:JSON.stringify([testTransaction])});
+    });
     await page.getByLabel('I want to spend', {exact:true}).fill('10');
     await page.getByLabel('I want to spend this money because').fill('I want to test');
     await page.getByRole('button',{name:'Request'}).click();

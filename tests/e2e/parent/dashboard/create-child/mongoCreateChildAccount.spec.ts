@@ -1,5 +1,6 @@
-import {test, expect} from '@playwright/test';
-import { configMockEnvironment, configMongoEnvironment, loginAsMockParent, loginAsMongoParent } from '@playwrightHelpers';
+import {expect, test} from '@playwright/test';
+import {configMongoEnvironment, loginAsMongoParent} from '@playwrightHelpers';
+import {ChildAccount} from "@models/child-account";
 
 export const navigateToParentDashboard = async (page: any) => {
     page.getByRole('link', {name: 'Dashboard'}).click();
@@ -13,7 +14,7 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
         await page.getByText('Create Child Account').click();
     });
 
-    test('should show the create child dialog', async ({page, context}) => {
+    test('should show the create child dialog', async ({page}) => {
         // Wait for the dialog to be available
         await page.getByRole('dialog');
 
@@ -43,8 +44,34 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
         const interestRateInput = page.getByLabel('Interest');
         await expect(interestRateInput).toBeVisible();
         expect(await interestRateInput.inputValue()).toBe('');
+    });
 
 
+    test('should create a child account', async ({page}) => {
+        const newChildAccount : ChildAccount = {
+            _id: 'test',
+            isChildAccount: true,
+            displayName: 'Test Child',
+            username: 'testchild',
+            password: 'password',
+            balance: 100,
+            interest: 5,
+            parentId: 'test'
+        }
+        await page.route(`**/api/childaccount`, async (route) => {
+            await route.fulfill({
+                status: 200,
+                body: JSON.stringify(newChildAccount)
+            });
+        });
 
+        await page.getByLabel('Display Name').fill(newChildAccount.displayName);
+        await page.getByLabel('Username').fill(newChildAccount.username);
+        await page.getByLabel('Password').fill(newChildAccount.password);
+        await page.getByLabel('Starting Balance').fill(newChildAccount.balance.toString());
+        await page.getByLabel('Interest').fill(newChildAccount.interest.toString());
+        await page.getByRole('button', {name: 'Create Account'}).click();
+
+        await expect(page.getByText('Test Child')).toBeVisible();
     });
 });
