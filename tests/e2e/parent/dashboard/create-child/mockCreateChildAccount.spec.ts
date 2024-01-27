@@ -1,5 +1,5 @@
-import {test, expect} from '@playwright/test';
-import { configMockEnvironment, loginAsMockParent } from '@playwrightHelpers';
+import {expect, test} from '@playwright/test';
+import {configMockEnvironment, loginAsMockParent} from '@playwrightHelpers';
 
 export const navigateToParentDashboard = async (page: any) => {
     page.getByRole('link', {name: 'Dashboard'}).click();
@@ -13,7 +13,7 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
         await page.getByText('Create Child Account').click();
     });
 
-    test('should show the create child dialog', async ({page, context}) => {
+    test('should show the create child dialog', async ({page}) => {
         // Wait for the dialog to be available
         await page.getByRole('dialog');
 
@@ -45,8 +45,7 @@ test.describe('Mock Client - Parent - Creating child account', async () => {
         expect(await interestRateInput.inputValue()).toBe('');
     });
 
-    test('should create a child account', async ({page, context}) => {
-        await page.getByRole('dialog');
+    test('should create a child account', async ({page}) => {
 
         await page.getByLabel('Display Name').fill('Test Child');
         await page.getByLabel('Username').fill('testchild');
