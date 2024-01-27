@@ -16,12 +16,6 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps
       - name: Run Playwright tests on master branch
-        run: npm run playwright:chromium
+        run: npm run playwright:chromium:firefox
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-        if: github.ref == 'refs/heads/master'
-      - name: Run Playwright tests on other branches
-        run: npx playwright test
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-        if: github.ref != 'refs/heads/master'

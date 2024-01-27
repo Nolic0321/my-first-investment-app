@@ -13,6 +13,7 @@
     "test:coverage": "jest --coverage",
     "playwright": "npx playwright test",
     "playwright:chromium": "npx playwright test --project chromium",
+    "playwright:chromium:firefox": "npx playwright test --project chromium --project firefox",
     "playwright:watch": "nodemon --watch '*.ts' --exec \"npm run playwright:chromium\"",
     "playwright:ui": "npx playwright test --ui"
   },
