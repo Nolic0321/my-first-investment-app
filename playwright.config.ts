@@ -1,9 +1,8 @@
-import {PlaywrightTestConfig, devices} from "playwright/test";
+import {devices, PlaywrightTestConfig} from "playwright/test";
 
 const config: PlaywrightTestConfig = {
     testDir: 'tests',
     reporter: process.env.CI ? 'github' : 'list',
-    workers: 4,
     projects: [
         /* Test against desktop browsers */
         {

@@ -1,5 +1,5 @@
-import {test, expect } from '@playwright/test'
-import { configMockEnvironment, loginAsMockChild } from '@playwrightHelpers';
+import {expect, test} from '@playwright/test'
+import {configMockEnvironment, loginAsMockChild} from '@playwrightHelpers';
 
 
 test.describe('Mock Spend Money Request', ()=>{
@@ -17,7 +17,6 @@ test.describe('Mock Spend Money Request', ()=>{
         await page.getByPlaceholder('Enter amount', { exact: true }).fill('10');
         await page.getByLabel('I want to spend this money because').fill('I want to test');
         await page.getByRole('button',{name:'Request'}).click();
-        await page.waitForTimeout(500);
         await expect(page.getByText(`($${accountBalance.toFixed(2)})`)).toBeVisible();
         await expect(page.getByText(`$${(accountBalance-10).toFixed(2)}`)).toBeVisible();
     });

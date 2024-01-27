@@ -5,7 +5,7 @@ export const navigateToParentDashboard = async (page: any) => {
     page.getByRole('link', {name: 'Dashboard'}).click();
 }
 
-test.describe('Mock Client - Parent - Creating child account', async () => {
+test.describe('Mock Create Child Account', async () => {
     test.beforeEach(async ({page}) => {
         await configMockEnvironment(page);
         await loginAsMockParent(page);

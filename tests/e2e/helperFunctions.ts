@@ -5,7 +5,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 export const performLogin = async (page:any, username:string, password:string) => {
-    if(!page.url().includes(process.env.PLAYWRIGHT_TEST_BASE_URL)) await page.goto(process.env.PLAYWRIGHT_TEST_BASE_URL);
+    if(!page.url().includes(process.env.PLAYWRIGHT_TEST_BASE_URL)) {
+        await page.goto(process.env.PLAYWRIGHT_TEST_BASE_URL, {waitUntil: 'networkidle'});
+    }
     await page.getByRole('link', { name: 'Dashboard' }).click();
     await page.getByLabel('Username').click();
     await page.getByLabel('Username').fill(username);
