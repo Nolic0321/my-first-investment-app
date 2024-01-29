@@ -14,7 +14,6 @@ test.describe('Mongo Request Approval', () => {
         await expect(requestToTest).toBeVisible();
         const elementId = await requestToTest.getAttribute('id')??'';
         await page.route(`**/api/transactions/*/approve`, async (route) => {
-            console.log('route called');
             requestCalled = true;
             await route.fulfill({
                 status: 200

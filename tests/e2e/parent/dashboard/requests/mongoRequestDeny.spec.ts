@@ -12,7 +12,6 @@ test.describe('Mongo Request Denial', () => {
         let requestCalled = false;
         await expect(page.getByText('Request $10')).toBeVisible();
         await page.route(`**/api/transactions/*/deny`, async (route) => {
-            console.log('route called');
             requestCalled = true;
             await route.fulfill({
                 status: 200
