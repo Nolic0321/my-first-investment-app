@@ -36,10 +36,13 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: $PLAYWRIGHT_TEST_BASE_URL Path
-        run: echo $PLAYWRIGHT_TEST_BASE_URL
+        run: echo "$PLAYWRIGHT_TEST_BASE_URL"
 
       - name: Wait for vercel Path
-        run: echo ${{ steps.waitForVercelPreviewDeployment.outputs.url }}
+        run: echo "${{ steps.waitForVercelPreviewDeployment.outputs.url }}"
+
+      - name: Wait for vercel Path 2
+        run: echo "${{ needs.test_setup.outputs.preview_url }}"
 
       - name: Run Playwright tests
         run: npm run playwright:chromium
