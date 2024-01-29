@@ -11,6 +11,7 @@ export async function GET(req: Request, {params}:{params:{id:string}}){
             childId: {$in: childAccounts!.map(childAccount => { return childAccount._id})},
             approved: ApprovalStatus.Pending
         });
+        console.log(`childAccounts: ${JSON.stringify(transactions?.documents)}`)
         return Response.json(transactions?.documents);
     }catch (error){
         return new Response(null,{
@@ -23,7 +24,6 @@ export async function GET(req: Request, {params}:{params:{id:string}}){
 export async function POST(req: Request, {params}:{params:{id:string}}){
     try {
         const requestData = await req.json() as Transaction;
-        console.log(`requestData: ${JSON.stringify(requestData)}`);
         const newTransactionId = await updateOneById('transactions',requestData._id, requestData);
         if(!newTransactionId?.modifiedCount) throw new Error('Failed to request transaction');
         const pendingTransactions = await findMany<Transaction>('transactions', {

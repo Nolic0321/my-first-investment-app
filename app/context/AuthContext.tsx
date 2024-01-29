@@ -1,5 +1,5 @@
 'use client'
-import React, {createContext, useState, ReactNode, useContext, useEffect} from "react";
+import React, {createContext, ReactNode, useContext, useEffect, useState} from "react";
 import {ClientContext} from "./ClientContext";
 import {IUser} from "@models/user";
 import {ChildAccount} from "@models/child-account";
@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
                         setUser(user);
                     }
                 });
-        };
+        }
     },[clientContext]);
 
     const login = async (userData: LoginData) => {

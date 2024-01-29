@@ -7,9 +7,6 @@ import {Transaction} from "@models/transaction";
 import {DeleteResponse, UpdateOneResponse} from "@mongoDataApiHelper";
 
 export default class MongoDbClient implements IClient {
-    constructor() {
-        console.log('creating mongo client')
-    }
 
     async auth(userData: LoginData, options?: Option | undefined): Promise<IUser | null> {
         try {
@@ -105,13 +102,11 @@ export default class MongoDbClient implements IClient {
     }
 
     getPendingRequestsForChild(userId: string, options?: Option | undefined): Promise<Transaction[]> {
-        console.log(`mongoDbClient.getPendingRequests(${userId})`);
         const response = this.get<Transaction[]>(`/api/childaccount/${userId}/transactions`);
         return response as Promise<Transaction[]>;
     }
 
     getPendingRequestsForParent(parentUserId: string, options?: Option): Promise<Transaction[]> {
-        console.log(`mongoDbClient.getPendingRequests(${parentUserId})`);
         const response = this.get<Transaction[]>(`/api/parent/${parentUserId}/transactions`);
         return response as Promise<Transaction[]>;
     }
@@ -128,7 +123,6 @@ export default class MongoDbClient implements IClient {
 
     private async get<T>(url: string, body?: any, headers?: any):Promise<T | null> {
         try {
-            console.log(`fetching GET ${url}`);
             const response = await fetch(url, {
                 method: 'GET',
                 body: JSON.stringify(body),

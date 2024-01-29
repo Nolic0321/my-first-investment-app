@@ -4,6 +4,7 @@ import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";
+import {guid} from '../helper-functions';
 
 
 export const mockChildren: ChildAccount[] = [
@@ -19,9 +20,6 @@ export const mockUsers: IUser[] = [
 export const mockRequests: Transaction[] = []
 
 export default class MockClient implements IClient {
-    constructor() {
-        console.log('creating mock client');
-    }
 
     async auth(userData: LoginData): Promise<IUser | ChildAccount | null> {
         const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);
@@ -52,6 +50,7 @@ export default class MockClient implements IClient {
 
     //Child CRUD
     async addChildUser(childData: ChildAccount): Promise<ChildAccount| null> {
+        childData._id = guid();
         mockUsers.push(childData);
         mockChildren.push(childData);
         return Promise.resolve(childData);
@@ -110,7 +109,7 @@ export default class MockClient implements IClient {
             transactionToApprove.approved = ApprovalStatus.Approved;
             //Return the updated mockRequests array
             const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved !== ApprovalStatus.Rejected));
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved === ApprovalStatus.Pending));
         });
     }
 
@@ -126,7 +125,7 @@ export default class MockClient implements IClient {
             transactionToReject.approved = ApprovalStatus.Rejected;
             //Return the updated mockRequests array
             const parentId = mockChildren.find(child => child._id === transaction.childId)?.parentId;
-            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved !== ApprovalStatus.Rejected));
+            resolve(mockRequests.filter(request => mockChildren.filter(child => child.parentId === parentId).map(child => child._id).includes(request.childId) && request.approved === ApprovalStatus.Pending));
         });
     }
 
