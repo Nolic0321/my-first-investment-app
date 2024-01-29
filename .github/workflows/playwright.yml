@@ -6,23 +6,24 @@ on:
       - master
 
 jobs:
-  test:
-    needs: vercel
+  setup:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install NodeJs
+      - name: Use Node.js
         uses: actions/setup-node@v4
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+  test:
+    needs: [vercel,setup]
+    runs-on: ubuntu-latest
 
+    steps:
       - name: Run Playwright tests
         run: npm run playwright
         env:
