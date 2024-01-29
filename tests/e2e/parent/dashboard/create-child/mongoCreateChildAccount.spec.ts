@@ -2,15 +2,12 @@ import {expect, test} from '@playwright/test';
 import {configMongoEnvironment, loginAsMongoParent} from '@playwrightHelpers';
 import {ChildAccount} from "@models/child-account";
 
-export const navigateToParentDashboard = async (page: any) => {
-    page.getByRole('link', {name: 'Dashboard'}).click();
-}
 
 test.describe('Mock Create Child Account', async () => {
     test.beforeEach(async ({page}) => {
         await configMongoEnvironment(page);
         await loginAsMongoParent(page);
-        await navigateToParentDashboard(page);
+        await page.getByRole('link', {name: 'Dashboard'}).click();
         await page.getByText('Create Child Account').click();
     });
 

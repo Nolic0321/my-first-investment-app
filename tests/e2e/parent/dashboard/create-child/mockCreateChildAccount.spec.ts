@@ -1,15 +1,12 @@
 import {expect, test} from '@playwright/test';
 import {configMockEnvironment, loginAsMockParent} from '@playwrightHelpers';
 
-export const navigateToParentDashboard = async (page: any) => {
-    page.getByRole('link', {name: 'Dashboard'}).click();
-}
 
 test.describe('Mock Create Child Account', async () => {
     test.beforeEach(async ({page}) => {
         await configMockEnvironment(page);
         await loginAsMockParent(page);
-        await navigateToParentDashboard(page);
+        await page.getByRole('link', {name: 'Dashboard'}).click();
         await page.getByText('Create Child Account').click();
     });
 
