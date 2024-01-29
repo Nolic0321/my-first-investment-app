@@ -27,11 +27,13 @@ export const loginAsMockChild = async (page:any) => {
 export const loginAsMongoParent = async (page:any) => {
     await configMongoEnvironment(page);
     await performLogin(page, 'firstmongouser', 'pass123');
+    await page.waitForTimeout(1000);
 }
 
 export const loginAsMongoChild = async (page:any) => {
     await configMongoEnvironment(page);
     await performLogin(page, 'firstmongochild', 'pass123');
+    await page.waitForTimeout(1000);
 }
 
 export const createMockChildRequest = async (page:any) => {
