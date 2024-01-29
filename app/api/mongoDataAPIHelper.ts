@@ -65,7 +65,6 @@ export async function findMany<T>(collection: string, filter?: object): Promise<
             filter: {...filter}
         }
 
-        console.log(`findMany body: ${JSON.stringify(body)}`);
 
         const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/find`, {
             method: 'POST',
@@ -91,7 +90,6 @@ export async function findMany<T>(collection: string, filter?: object): Promise<
  * @returns {Promise<InsertOneResponse | null>} - A Promise that resolves to the inserted id or null if an error occurred.
  */
 export async function insertOne<T>(collection: string, documentData: T): Promise<InsertOneResponse | null> {
-    console.log(`insertOne collection: ${collection} documentData: ${JSON.stringify(documentData)} `);
     try {
         const body = {
             collection: collection,
@@ -185,6 +183,64 @@ export async function updateOne<T>(collection: string, filter: object, update: o
             }
         }
         const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/updateOne`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Request-Headers': '*',
+                'api-key': process.env.MONGODB_DATA_API_KEY as string
+            }
+        });
+        return await response.json();
+    } catch
+        (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+export async function deleteById(collection: string, id: string): Promise<DeleteResponse | null> {
+    try {
+        return await deleteOne(collection, {_id: {$oid: id}});
+    } catch (e) {
+        return null;
+    }
+}
+
+export async function deleteOne(collection: string, filter: object): Promise<DeleteResponse | null> {
+    try {
+        const body = {
+            collection: collection,
+            database: process.env.MONGODB_DATABASE,
+            dataSource: process.env.MONGODB_DATASOURCE,
+            filter: filter
+        }
+        const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/deleteOne`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Request-Headers': '*',
+                'api-key': process.env.MONGODB_DATA_API_KEY as string
+            }
+        });
+        return await response.json();
+    } catch
+        (e) {
+        console.log(e);
+        return null;
+    }
+}
+
+export async function deleteMany(collection: string, filter: object): Promise<DeleteResponse | null>{
+    try {
+        const body = {
+            collection: collection,
+            database: process.env.MONGODB_DATABASE,
+            dataSource: process.env.MONGODB_DATASOURCE,
+            filter: filter
+        }
+        const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/deleteMany`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {

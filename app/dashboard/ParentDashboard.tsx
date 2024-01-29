@@ -23,10 +23,8 @@ export default function ParentDashboard() {
 	const {user} = useContext(AuthContext)!
 	useEffect(()=>{
 		if (user && user._id) {
-			console.log('getting child accounts');
 			client.getChildAccounts(user._id)
 				.then((childAccounts:ChildAccount[]|null) => {
-					console.log(`childAccounts found: ${JSON.stringify(childAccounts)}`);
 					if(childAccounts)
 						setChildAccounts(childAccounts);
 				});

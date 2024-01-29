@@ -4,7 +4,7 @@ import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";
-import { guid } from '../helper-functions';
+import {guid} from '../helper-functions';
 
 
 export const mockChildren: ChildAccount[] = [
@@ -20,9 +20,6 @@ export const mockUsers: IUser[] = [
 export const mockRequests: Transaction[] = []
 
 export default class MockClient implements IClient {
-    constructor() {
-        console.log('creating mock client');
-    }
 
     async auth(userData: LoginData): Promise<IUser | ChildAccount | null> {
         const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);

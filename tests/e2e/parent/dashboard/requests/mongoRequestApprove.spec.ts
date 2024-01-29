@@ -1,28 +1,25 @@
 import {expect, test} from '@playwright/test';
-import {createMongoChildRequest, loginAsMongoParent} from "@playwrightHelpers";
+import {baseUrl, createMongoChildRequest, loginAsMongoParent} from "@playwrightHelpers";
+import {DeleteResponse} from "@mongoDataApiHelper";
 
 test.describe('Mongo Request Approval', () => {
+    let currentTransactionId = '';
     test.beforeEach(async ({page}) => {
-        await createMongoChildRequest(page);
+        currentTransactionId = await createMongoChildRequest(page);
         await page.getByRole('link', {name: 'Logout'}).click();
         await loginAsMongoParent(page);
     });
 
-    test('should approve request', async ({page}) => {
-        let requestCalled = false;
-        const requestToTest = page.getByText('Request $10').first();
-        await expect(requestToTest).toBeVisible();
-        const elementId = await requestToTest.getAttribute('id')??'';
-        await page.route(`**/api/transactions/*/approve`, async (route) => {
-            requestCalled = true;
-            await route.fulfill({
-                status: 200
-            });
-        });
-        await page.getByRole('button', {name: 'Approve'}).first().click();
-        const thing = page.getByTestId(elementId);
-        await expect(thing).toBeHidden();
-        expect(requestCalled).toBeTruthy();
+    test('should approve request', async ({page, request}) => {
+        const requestComponent = page.getByText(`Request $10Reason: ${currentTransactionId}`);
+        await expect(requestComponent).toBeVisible();
+        await requestComponent.getByRole('button', {name: 'Approve'}).click();
+        await expect(requestComponent).toBeHidden();
+
+        //Cleanup
+        const deleted = await request.delete(`${await baseUrl()}/api/transactions/test/${currentTransactionId}`);
+        expect(deleted.ok(), 'should cleanup transaction properly').toBeTruthy();
+        expect(await deleted.json() as unknown as DeleteResponse, 'should expect 1 item deleted').toEqual({deletedCount: 1});
     });
 
 });

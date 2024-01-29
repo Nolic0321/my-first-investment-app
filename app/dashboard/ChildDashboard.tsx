@@ -58,6 +58,7 @@ export default function ChildDashboard() {
         }
         // Send request to backend
         try {
+            console.log(newRequest);
             let updatedRequests = await client.sendRequest(newRequest, (newRequest.amount < 0) ? {error: "Cannot have negative"} as Option : undefined);
             setPendingRequests(updatedRequests);
         } catch (error: any) {

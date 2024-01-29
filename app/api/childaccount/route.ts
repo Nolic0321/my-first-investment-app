@@ -1,10 +1,10 @@
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {findOne, insertOne} from "@mongoDataApiHelper";
+
 export const POST = async (req: Request) =>{
     try {
         const requestData = await req.json();
-        console.log(`api/childaccount POST: ${JSON.stringify(requestData)}`)
         const newChildAccountId = await insertOne<ChildAccount>("childaccounts",requestData as ChildAccount);
         if(!newChildAccountId){ throw new Error('Error creating child account');}
         const updateChildAccountData = {
@@ -14,7 +14,6 @@ export const POST = async (req: Request) =>{
 
         let childUser = await findOne<IUser>('users',{_id: {$oid: newChildAccountId.insertedId}});
         if(!childUser){
-            console.log('Child user not found; creating new user');
             const newChildUser:IUser = {
                 _id:{$oid: newChildAccountId.insertedId},
                 username: requestData.username,

@@ -1,5 +1,6 @@
 import {expect, test} from '@playwright/test'
-import {loginAsMongoChild} from '@playwrightHelpers';
+import {baseUrl, loginAsMongoChild} from '@playwrightHelpers';
+import {Transaction} from "@models/transaction";
 
 
 test.describe('Mongo Spend Money Request', ()=>{
@@ -11,13 +12,24 @@ test.describe('Mongo Spend Money Request', ()=>{
         await expect(page.getByText('Spend Money RequestI want to')).toBeVisible();
     });
 
-    test('should update the account balance when a money request is made', async ({page}) => {
-        const accountBalance = Number.parseFloat(await page.getByTestId('account-balance').textContent()??"0");
-        await page.getByPlaceholder('Enter amount', { exact: true }).fill('10');
-        await page.getByLabel('I want to spend this money because').fill('I want to test');
-        await page.getByRole('button',{name:'Request'}).click();
-        await expect(page.getByText(`($${accountBalance.toFixed(2)})`)).toBeVisible();
-        await expect(page.getByText(`$${(accountBalance-10).toFixed(2)}`)).toBeVisible();
-    });
+    test('should update the account balance when a money request is made', async ({page, request}) => {
+        let currentTransactionId = '';
+        page.on('response', async (response) => {
+            if(response.url().includes('transactions') && response.request().method() === 'POST') {
+                const responseData:Transaction[] = await response.json();
+                currentTransactionId = responseData[0]._id;
+            }
+        });
 
+        const accountBalance = Number.parseFloat(await page.getByTestId('account-balance').textContent() ?? "0");
+        await page.getByPlaceholder('Enter amount', {exact: true}).fill('10');
+        await page.getByLabel('I want to spend this money because').fill('I want to test');
+        await page.getByRole('button', {name: 'Request'}).click();
+        await page.waitForTimeout(500);
+        await expect(page.getByText(`($${accountBalance.toFixed(2)})`)).toBeVisible();
+        await expect(page.getByText(`$${(accountBalance - 10).toFixed(2)}`)).toBeVisible();
+
+        //Cleanup
+        await request.delete(`${await baseUrl()}/api/transactions/${currentTransactionId}`);
+    });
 });

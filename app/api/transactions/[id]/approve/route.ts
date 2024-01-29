@@ -2,7 +2,6 @@ import {findMany, updateOneById} from "@mongoDataApiHelper";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 
 export async function POST(req: Request, {params}:{params:{id:string}}){
-    console.log(`api/transactions/${params.id}/approve POST`);
     try {
         const requestData = await req.json();
         const transactionData = {...requestData, _id: { $oid: requestData._id }};
