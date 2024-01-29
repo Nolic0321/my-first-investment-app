@@ -3,7 +3,7 @@ import {devices, PlaywrightTestConfig} from "playwright/test";
 const config: PlaywrightTestConfig = {
     testDir: 'tests',
     reporter: process.env.CI ? 'github' : 'dot',
-    retries: 3,
+    retries: 1,
     projects: [
         /* Test against desktop browsers */
         {
