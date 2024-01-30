@@ -1,12 +1,3 @@
-import {Balance} from "@models/balance";
-
-export function guid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
-
 async function updateDailyInterest() {
     const latestBalanceEntry = await getLatestBalanceEntry(); // Implement this
     const currentDate = new Date();
@@ -17,9 +8,9 @@ async function updateDailyInterest() {
         newBalance += calculateDailyInterest(newBalance); // Implement this
     }
 
-    const newBalanceEntry:Balance = {
+    const newBalanceEntry = {
         date: currentDate,
-        balance: newBalance,
+        amount: newBalance,
         // Include other relevant fields
     };
 
