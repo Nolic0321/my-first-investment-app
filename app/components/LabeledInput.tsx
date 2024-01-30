@@ -14,9 +14,9 @@ export type LabelledInputProps = {
 
 export default function LabelledInput({label, inputText, onInputChanged, className, placeholder, footerDisplay, headerDisplay, disabled, name}: LabelledInputProps) {
     return (
-        <div className={`relative bg-white rounded-md px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-indigo-600  ${className||''}`}>
+        <div className={`relative bg-white rounded-md px-3 pb-1.5 pt-2.5 ring-1 ring-inset ring-gray-300 focus-within:z-10 focus-within:ring-2 focus-within:ring-emerald-700  ${className||''}`}>
             <label htmlFor={name} className="block text-xs font-medium text-black bg-white">{label}</label>
-            <Input inputName={name} inputText={inputText} onInputChanged={onInputChanged} placeholder={placeholder} footerDisplay={footerDisplay} headerDisplay={headerDisplay} disabled={disabled}/>
+            <Input className={'px-0'} inputName={name} inputText={inputText} onInputChanged={onInputChanged} placeholder={placeholder} footerDisplay={footerDisplay} headerDisplay={headerDisplay} disabled={disabled}/>
         </div>
     );
 }

@@ -11,7 +11,7 @@ export async function GET(req: Request, {params}:{params:{id:string}}){
             childId: {$in: childAccounts!.map(childAccount => { return childAccount._id})},
             approved: ApprovalStatus.Pending
         });
-        console.log(`childAccounts: ${JSON.stringify(transactions?.documents)}`)
+
         return Response.json(transactions?.documents);
     }catch (error){
         return new Response(null,{
