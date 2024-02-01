@@ -1,10 +1,13 @@
+import { Balance } from "@models/balance";
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {findOne, insertOne} from "@mongoDataApiHelper";
 
 export const POST = async (req: Request) =>{
     try {
-        const requestData = await req.json();
+        const requestData = await req.json() as ChildAccount;
+
+        //Create Child Account
         const newChildAccountId = await insertOne<ChildAccount>("childaccounts",requestData as ChildAccount);
         if(!newChildAccountId){ throw new Error('Error creating child account');}
         const updateChildAccountData = {
@@ -12,6 +15,16 @@ export const POST = async (req: Request) =>{
             _id: newChildAccountId.insertedId
         }
 
+        //Create first balance
+        const newBalance:Balance = {
+            childId: newChildAccountId.insertedId,
+            balance: requestData.balance,
+            date: new Date()
+        }
+        const newBalanceId = await insertOne<Balance>('balances',newBalance);
+        if(!newBalanceId){throw new Error('Error creating balance')}
+
+        //Create Child User Account
         let childUser = await findOne<IUser>('users',{_id: {$oid: newChildAccountId.insertedId}});
         if(!childUser){
             const newChildUser:IUser = {
@@ -23,6 +36,7 @@ export const POST = async (req: Request) =>{
             };
             await insertOne<IUser>('users',newChildUser);
         }
+
         return Response.json(updateChildAccountData);
     } catch (error) {
         return new Response(null, {

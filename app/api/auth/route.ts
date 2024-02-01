@@ -1,13 +1,14 @@
 import dotenv from 'dotenv';
 import {LoginData} from "@contexts/AuthContext";
-import {findOne} from "@mongoDataApiHelper";
+import {aggregate, findOne, insertOne, updateOne, updateOneById} from "@mongoDataApiHelper";
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
+import { Balance, updateAndReturnNewBalance } from '@models/balance';
 
 dotenv.config();
 
 export const POST = async (req: Request) => {
-    const loginData = await req.json() as LoginData; // Assuming the user ID is passed as a URL parameter
+    const loginData = await req.json() as LoginData;
     try {
         const userFindResult = await findOne<IUser>("users", {
                 username: loginData.username,
@@ -19,17 +20,54 @@ export const POST = async (req: Request) => {
                 statusText:'User not found'
             });
         }
-        const childAccount = await findOne<ChildAccount>('childaccounts',{_id: {$oid: userFindResult.document._id}});
-        if(!childAccount?.document){
+        const childAccountResponse = await findOne<ChildAccount>('childaccounts',{_id: {$oid: userFindResult.document._id}});
+        const childAccount = childAccountResponse?.document;
+        if(!childAccount){
             return Response.json(userFindResult.document)
         }else{
-            return Response.json(childAccount.document);
+            //Update child balance for the child account
+            const pipeline = [
+                {$match: {"childId":childAccount._id}},
+                {$sort:{"date":-1}},
+                {$limit:1}
+            ]
+            const latestBalanceResponse = await aggregate<Balance>('balances',pipeline);
+            let noFirstBalance = false;
+            let latestBalance = latestBalanceResponse?.documents[0];
+            if(!latestBalance) {
+                latestBalance = {
+                    childId: childAccount._id,
+                    balance: childAccount.balance,
+                    date: new Date()
+                };
+                noFirstBalance = true;
+            }else{
+                latestBalance = {...latestBalanceResponse, date: new Date(latestBalance.date)} as Balance;
+            }
+            
+            //Check if the latestBalance.date is today            
+            const today = new Date();
+            if(latestBalance.date.toDateString() !== today.toDateString() || noFirstBalance){
+                //Update the balance
+                const newBalance = await updateAndReturnNewBalance(latestBalance, childAccount.interest/10);
+                const insertResult = await insertOne<Balance>('balances',newBalance);
+                if(!insertResult || !insertResult.insertedId) throw new Error('Failed to update balance');
+
+                const updatedAccount : ChildAccount = {...childAccount, balance: newBalance.balance, _id:undefined};
+                const updateResult = await updateOneById<ChildAccount>('childaccounts',childAccount._id,updatedAccount);
+                if(!updateResult) throw new Error('Failed to update account');
+                //Return the child account
+                return Response.json(updatedAccount);
+            }
+            //Return the child account
+            return Response.json(childAccount);
         }
 
     } catch (error) {
+        console.log(`auth route error: ${JSON.stringify(error)}`)
         return new Response(null,{
             status:500,
-            statusText:'Server error'
+            statusText:`Server error: ${JSON.stringify(error)}`
         });
     }
 }

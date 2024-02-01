@@ -16,7 +16,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
     const [displayName, setDisplayName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [startingBalance, setStartingBalance] = useState(0);
+    const [startingBalance, setStartingBalance] = useState("");
     const [interest, setInterest] = useState(0);
     const {user} = useContext(AuthContext)!;
     const handleOnCreate = () => {
@@ -25,7 +25,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
             displayName,
             username,
             password,
-            balance: startingBalance,
+            balance: parseFloat(startingBalance),
             interest,
             parentId: user?._id??"" // This should be set to the current user's id
         };
@@ -43,7 +43,7 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
                                 <LabelledInput name={"display-name"} label={"Display Name"} inputText={displayName} onInputChanged={setDisplayName} placeholder={"John Doe"} className={'rounded-b-none'}/>
                                 <LabelledInput name={'username'} label={"Username"} inputText={username} onInputChanged={setUsername} placeholder={"johndoe"} className={'rounded-none'}/>
                                 <LabelledInput name={'password'} label={"Password"} inputText={password} onInputChanged={setPassword} placeholder={"********"} className={'rounded-none'}/>
-                                <LabelledInput name={'starting-balance'} label={"Starting Balance"} inputText={startingBalance.toString()} onInputChanged={(newInput) => setStartingBalance(parseInt(newInput))} placeholder={"100"} className={'rounded-none'}/>
+                                <LabelledInput name={'starting-balance'} label={"Starting Balance"} inputText={startingBalance} onInputChanged={(newInput:string)=>setStartingBalance(newInput)} placeholder={"100"} className={'rounded-none'}/>
                                 <LabelledInput name={'interest'} label={"Interest"} inputText={interest?interest.toString():""} onInputChanged={(newInput) => setInterest(parseInt(newInput))} placeholder={"5"} className={'rounded-t-none'} footerDisplay={"%"}/>
                             </div>
                             <Button buttonText={'Create Account'} onButtonPressed={handleOnCreate}/>

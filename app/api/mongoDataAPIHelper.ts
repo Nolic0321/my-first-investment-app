@@ -95,7 +95,7 @@ export async function insertOne<T>(collection: string, documentData: T): Promise
             collection: collection,
             database: process.env.MONGODB_DATABASE,
             dataSource: process.env.MONGODB_DATASOURCE,
-            document: documentData
+            document: formatDocument(documentData)
         };
 
         const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/insertOne`, {
@@ -127,7 +127,7 @@ export async function insertMany<T>(collection: string, documentsData: T[]): Pro
             collection: collection,
             database: process.env.MONGODB_DATABASE,
             dataSource: process.env.MONGODB_DATASOURCE,
-            documents: documentsData
+            documents: documentsData.map(formatDocument)
         };
 
         const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/insertMany`, {
@@ -257,11 +257,41 @@ export async function deleteMany(collection: string, filter: object): Promise<De
     }
 }
 
+export async function aggregate<T>(collection: string, pipeline?:object): Promise <AggregateResponse<T> | null>{
+    try{
+        const body: any= {
+            collection: collection,
+            database: process.env.MONGODB_DATABASE,
+            dataSource: process.env.MONGODB_DATASOURCE,
+            pipeline: pipeline
+         };
+
+        const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/aggregate`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Request-Headers': '*',
+                'api-key': process.env.MONGODB_DATA_API_KEY as string
+            }
+        });
+        if(!response.ok) throw new Error(`Failed to fetch data from ${collection}: ${(await response.json())}`);
+        return await response.json();
+    } catch (e){
+        console.log(e);
+        return null;
+    }
+}
+
 export type FindOneResponse<T> = {
     document: T
 }
 
 export type FindManyResponse<T> = {
+    documents: T[]
+}
+
+export type AggregateResponse<T> = {
     documents: T[]
 }
 
@@ -288,4 +318,17 @@ export type UpdateManyResponse = {
 
 export type DeleteResponse = {
     deletedCount: number
+}
+
+
+function formatDocument(document: any): any{
+    let formattedDocument: any = {};
+    for (const key in document) {
+        if (document[key] instanceof Date) {
+            formattedDocument[key] = {$date:document[key]};
+        }else{
+            formattedDocument[key] = document[key];
+        }
+    }
+    return formattedDocument;
 }
