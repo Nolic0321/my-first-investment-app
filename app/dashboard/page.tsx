@@ -1,8 +1,8 @@
 'use client'
 import {useContext} from "react";
 import Login from "../components/Login";
-import ChildDashboard from "./ChildDashboard";
-import ParentDashboard from "./ParentDashboard";
+import ChildDashboard from "./child-dashboard/ChildDashboard";
+import ParentDashboard from "./parent-dashboard/ParentDashboard";
 import {AuthContext} from "@contexts/AuthContext";
 
 export default function Dashboard() {

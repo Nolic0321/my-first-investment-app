@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
-import Button from "../components/Button";
+import Button from "../../components/Button";
 import {ClientContext} from "@contexts/ClientContext";
-import LabelledInput from "../components/LabeledInput";
+import LabelledInput from "../../components/LabeledInput";
 import {ChildAccount} from "@models/child-account";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";

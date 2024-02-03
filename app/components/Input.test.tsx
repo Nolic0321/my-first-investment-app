@@ -46,3 +46,12 @@ it('should fired the onInputChanged event when the input is changed',async () =>
     await user.type(inputElement,newValue);
     expect(inputChanged).toBeTruthy();
 });
+
+it('should respond to the onKeyPress event',async () =>{
+    let inputText = "1";
+    let enterPressed = false;
+    render(<Input onInputChanged={()=>{}} inputText={inputText} onKeyPress={(e)=>{if(e.key === 'Enter'){enterPressed = true}}}/>)
+    const inputElement = screen.getByDisplayValue(inputText);
+    fireEvent.keyDown(inputElement,{key:'Enter',code:'Enter'});
+    expect(enterPressed).toBeTruthy();
+});

@@ -4,7 +4,6 @@ import Button from "@components/Button";
 import LabelledInput from "@components/LabeledInput";
 import {ChildAccount} from "@models/child-account";
 import {AuthContext} from "@contexts/AuthContext";
-import {guid} from "../helper-functions";
 
 interface CreateChildAccountDialogProps {
     isOpen: boolean;

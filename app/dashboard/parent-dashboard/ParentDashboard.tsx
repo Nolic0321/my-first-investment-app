@@ -1,4 +1,4 @@
-import Button from "../components/Button";
+import Button from "../../components/Button";
 import {useContext, useEffect, useState} from "react";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import {ClientContext} from "@contexts/ClientContext";
