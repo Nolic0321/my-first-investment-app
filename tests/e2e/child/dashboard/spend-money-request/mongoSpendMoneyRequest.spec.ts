@@ -4,8 +4,15 @@ import {Transaction} from "@models/transaction";
 
 
 test.describe('Mongo Spend Money Request', ()=>{
+    let currentTransactionId = '';
     test.beforeEach(async ({page}) => {
         await loginAsMongoChild(page);
+    });
+
+    test.afterEach(async ({request}) => {
+        if(currentTransactionId) {
+            await request.delete(`${await baseUrl()}/api/transactions/${currentTransactionId}`);
+        }
     });
 
     test('should have Spend Money Request area', async ({page}) => {
@@ -13,7 +20,6 @@ test.describe('Mongo Spend Money Request', ()=>{
     });
 
     test('should update the account balance when a money request is made', async ({page, request}) => {
-        let currentTransactionId = '';
         page.on('response', async (response) => {
             if(response.url().includes('transactions') && response.request().method() === 'POST') {
                 const responseData:Transaction[] = await response.json();
@@ -28,8 +34,5 @@ test.describe('Mongo Spend Money Request', ()=>{
         await page.waitForTimeout(500);
         await expect(page.getByText(`($${accountBalance.toFixed(2)})`)).toBeVisible();
         await expect(page.getByText(`$${(accountBalance - 10).toFixed(2)}`)).toBeVisible();
-
-        //Cleanup
-        await request.delete(`${await baseUrl()}/api/transactions/${currentTransactionId}`);
     });
 });
