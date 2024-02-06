@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 import {LoginData} from "@contexts/AuthContext";
-import {aggregate, findOne, insertOne, updateOne, updateOneById} from "@mongoDataApiHelper";
+import {aggregate, findOne, insertOne, updateOneById} from "@mongoDataApiHelper";
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
-import { Balance, updateAndReturnNewBalance } from '@models/balance';
+import {Balance, updateAndReturnNewBalance} from '@models/balance';
 
 dotenv.config();
 
@@ -20,7 +20,8 @@ export const POST = async (req: Request) => {
                 statusText:'User not found'
             });
         }
-        const childAccountResponse = await findOne<ChildAccount>('childaccounts',{_id: {$oid: userFindResult.document._id}});
+        const foundUser = userFindResult.document;
+        const childAccountResponse = await findOne<ChildAccount>('childaccounts',{_id: {$oid: foundUser._id}});
         const childAccount = childAccountResponse?.document;
         if(!childAccount){
             return Response.json(userFindResult.document)
@@ -42,7 +43,7 @@ export const POST = async (req: Request) => {
                 };
                 noFirstBalance = true;
             }else{
-                latestBalance = {...latestBalanceResponse, date: new Date(latestBalance.date)} as Balance;
+                latestBalance = {...latestBalance, date: new Date(latestBalance.date)} as Balance;
             }
             
             //Check if the latestBalance.date is today            
@@ -50,10 +51,11 @@ export const POST = async (req: Request) => {
             if(latestBalance.date.toDateString() !== today.toDateString() || noFirstBalance){
                 //Update the balance
                 const newBalance = await updateAndReturnNewBalance(latestBalance, childAccount.interest/10);
+                if(!newBalance.balance && newBalance.balance !== 0) throw new Error('Failed to update balance');
                 const insertResult = await insertOne<Balance>('balances',newBalance);
                 if(!insertResult || !insertResult.insertedId) throw new Error('Failed to update balance');
 
-                const updatedAccount : ChildAccount = {...childAccount, balance: newBalance.balance, _id:undefined};
+                const updatedAccount : ChildAccount = {...childAccount, balance: newBalance.balance};
                 const updateResult = await updateOneById<ChildAccount>('childaccounts',childAccount._id,updatedAccount);
                 if(!updateResult) throw new Error('Failed to update account');
                 //Return the child account

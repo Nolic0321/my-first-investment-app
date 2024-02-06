@@ -1,7 +1,7 @@
 'use client'
 import {useContext, useState} from "react";
 import Button from "./Button";
-import {AuthContext, LoginData} from "@contexts/AuthContext";
+import {AuthContext} from "@contexts/AuthContext";
 import Input from "@components/Input";
 
 export default function Login() {
@@ -10,13 +10,8 @@ export default function Login() {
 	const authContext = useContext(AuthContext);
 	const [loginFailed, setLoginFailed] = useState(false);
 	const login = async () => {
-		if(authContext){
-			const credentials: LoginData = {
-				username: username,
-				password: password
-			}
-			setLoginFailed(!(await authContext.login(credentials)));
-		}
+		const loginSuccess = await authContext?.login({username: username, password: password});
+		setLoginFailed(!loginSuccess);
 	}
 
 	return (
