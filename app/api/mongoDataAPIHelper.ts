@@ -320,6 +320,14 @@ export type DeleteResponse = {
     deletedCount: number
 }
 
+export enum Collection{
+    Users = 'users',
+    ChildAccounts = 'childaccounts',
+    Balances = 'balances',
+    Transactions = 'transactions'
+
+}
+
 
 function formatDocument(document: any): any{
     let formattedDocument: any = {};

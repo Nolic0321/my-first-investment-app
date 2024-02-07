@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import {LoginData} from "@contexts/AuthContext";
-import {aggregate, findOne, insertOne, updateOneById} from "@mongoDataApiHelper";
+import {aggregate, Collection, findOne, insertOne, updateOneById} from "@mongoDataApiHelper";
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {Balance, updateAndReturnNewBalance} from '@models/balance';
@@ -10,7 +10,7 @@ dotenv.config();
 export const POST = async (req: Request) => {
     const loginData = await req.json() as LoginData;
     try {
-        const userFindResult = await findOne<IUser>("users", {
+        const userFindResult = await findOne<IUser>(Collection.Users, {
                 username: loginData.username,
                 password: loginData.password
             });
@@ -21,7 +21,7 @@ export const POST = async (req: Request) => {
             });
         }
         const foundUser = userFindResult.document;
-        const childAccountResponse = await findOne<ChildAccount>('childaccounts',{_id: {$oid: foundUser._id}});
+        const childAccountResponse = await findOne<ChildAccount>(Collection.ChildAccounts,{_id: {$oid: foundUser._id}});
         const childAccount = childAccountResponse?.document;
         if(!childAccount){
             return Response.json(userFindResult.document)
@@ -32,7 +32,7 @@ export const POST = async (req: Request) => {
                 {$sort:{"date":-1}},
                 {$limit:1}
             ]
-            const latestBalanceResponse = await aggregate<Balance>('balances',pipeline);
+            const latestBalanceResponse = await aggregate<Balance>(Collection.Balances,pipeline);
             let noFirstBalance = false;
             let latestBalance = latestBalanceResponse?.documents[0];
             if(!latestBalance) {
@@ -56,7 +56,7 @@ export const POST = async (req: Request) => {
                 if(!insertResult || !insertResult.insertedId) throw new Error('Failed to update balance');
 
                 const updatedAccount : ChildAccount = {...childAccount, balance: newBalance.balance};
-                const updateResult = await updateOneById<ChildAccount>('childaccounts',childAccount._id,updatedAccount);
+                const updateResult = await updateOneById<ChildAccount>(Collection.ChildAccounts,childAccount._id,updatedAccount);
                 if(!updateResult) throw new Error('Failed to update account');
                 //Return the child account
                 return Response.json(updatedAccount);

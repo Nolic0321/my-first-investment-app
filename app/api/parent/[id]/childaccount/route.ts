@@ -1,9 +1,9 @@
 import {ChildAccount} from "@models/child-account";
-import {findMany} from "@mongoDataApiHelper";
+import {Collection, findMany} from "@mongoDataApiHelper";
 
 export const GET = async(req: Request, {params}: {params:{id:string}}) =>{
     try{
-        const users = await findMany<ChildAccount[]>('childaccounts',{parentId: params.id});
+        const users = await findMany<ChildAccount[]>(Collection.ChildAccounts,{parentId: params.id});
         if(!users?.documents) throw new Error('No child accounts found');
         return Response.json(users.documents);
     }catch (error){

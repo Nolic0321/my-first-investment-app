@@ -21,7 +21,7 @@ test.describe('Mongo Spend Money Request', ()=>{
 
     test('should update the account balance when a money request is made', async ({page, request}) => {
         page.on('response', async (response) => {
-            if(response.url().includes('transactions') && response.request().method() === 'POST') {
+            if(response.url().includes(Collection.Transactions) && response.request().method() === 'POST') {
                 const responseData:Transaction[] = await response.json();
                 currentTransactionId = responseData[0]._id;
             }

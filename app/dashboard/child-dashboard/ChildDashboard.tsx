@@ -36,6 +36,7 @@ export default function ChildDashboard() {
     }, [user]);
 
     useEffect(() => {
+        if(!client || !childAccount || !childAccount._id) return;
         const fetchPendingRequests = async () => {
             try {
                 const requests = await client.getPendingRequestsForChild(childAccount?._id!);

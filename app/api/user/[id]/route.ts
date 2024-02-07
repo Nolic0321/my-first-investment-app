@@ -1,8 +1,9 @@
 import {IUser} from "@models/user";
-import {findById, updateOneById} from "@mongoDataApiHelper";
+import {Collection, findById, updateOneById} from "@mongoDataApiHelper";
+
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
     try {
-        const user = await findById<IUser>('users',params.id); // Replace 'UserSchema' with your actual User schema
+        const user = await findById<IUser>(Collection.Users,params.id); // Replace 'UserSchema' with your actual User schema
         if (!user?.document) {
             return new Response(null, {
                 status: 404,
@@ -22,7 +23,7 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
 export const PATCH = async (req: Request, {params}: { params: { id: string } }) => {
     try {
         const userData = await req.json() as IUser; // Assuming the user ID is passed as a URL parameter
-        const userId = await updateOneById('users',params.id, userData); // The 'new' option returns the updated document
+        const userId = await updateOneById(Collection.Users,params.id, userData); // The 'new' option returns the updated document
         if (!userId?.modifiedCount) {
             return new Response(null, {
                 status: 404,
