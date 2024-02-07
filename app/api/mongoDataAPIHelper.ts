@@ -30,7 +30,7 @@ export async function findOne<T>(collection: string, filter?: object): Promise<F
             collection: collection,
             database: process.env.MONGODB_DATABASE,
             dataSource: process.env.MONGODB_DATASOURCE,
-            filter: {...filter}
+            filter: filter?{...filter}:undefined
         }
 
         const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/findOne`, {
@@ -62,10 +62,10 @@ export async function findMany<T>(collection: string, filter?: object): Promise<
             collection: collection,
             database: process.env.MONGODB_DATABASE,
             dataSource: process.env.MONGODB_DATASOURCE,
-            filter: {...filter}
+            filter: filter?{...filter}:undefined
         }
 
-
+        console.log(`Body: ${JSON.stringify(body)}`);
         const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/find`, {
             method: 'POST',
             body: JSON.stringify(body),
@@ -75,7 +75,9 @@ export async function findMany<T>(collection: string, filter?: object): Promise<
                 'api-key': process.env.MONGODB_DATA_API_KEY as string
             }
         });
-        return await response.json();
+        var resJson = await response.json();
+        console.log(`resJson: ${JSON.stringify(resJson)}`);
+        return resJson;
     } catch (e) {
         console.log(e);
         return null;

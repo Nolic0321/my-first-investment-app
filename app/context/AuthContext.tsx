@@ -43,7 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem("userId");
+        localStorage.removeItem("user");
     };
     return (
         <AuthContext.Provider value={{login, logout, user}}>

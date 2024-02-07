@@ -22,11 +22,14 @@ export default function ParentDashboard() {
 
 	const {user} = useContext(AuthContext)!
 	useEffect(()=>{
-		if (user && user._id) {
+		if (user && user._id && client) {
 			client.getChildAccounts(user._id)
 				.then((childAccounts:ChildAccount[]|null) => {
-					if(childAccounts)
+					console.log(`responding to child account request`)
+					if(childAccounts) {
+						console.log(`child accounts: ${JSON.stringify(childAccounts)}`)
 						setChildAccounts(childAccounts);
+					}
 				});
 		}
 	}, [user, client]);

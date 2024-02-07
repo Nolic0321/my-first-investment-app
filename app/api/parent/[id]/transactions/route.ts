@@ -4,8 +4,8 @@ import {Collection, findMany, updateOneById} from "@mongoDataApiHelper";
 
 export async function GET(req: Request, {params}:{params:{id:string}}){
     try{
-        const childAccountResults = (await findMany<ChildAccount>(Collection.ChildAccounts,{parentId: params.id}));
-        if(!childAccountResults?.documents) throw new Error('No child accounts found');
+        const childAccountResults = await findMany<ChildAccount>(Collection.ChildAccounts,{parentId: params.id});
+        if(!childAccountResults) return Response.json([]);
         const childAccounts = childAccountResults.documents;
         const transactions = await findMany<Transaction[]>(Collection.Transactions,{
             childId: {$in: childAccounts!.map(childAccount => { return childAccount._id})},
