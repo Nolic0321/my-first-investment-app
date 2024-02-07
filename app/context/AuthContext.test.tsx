@@ -42,7 +42,7 @@ describe('AuthProvider', () => {
         // Mock localStorage
         Storage.prototype.setItem = jest.fn();
         Storage.prototype.getItem = jest.fn((key) =>{
-            if(key === 'userId') return mockUser._id;
+            if(key === 'user') return mockUser;
             return null;
         });
         Storage.prototype.removeItem = jest.fn();
@@ -71,7 +71,7 @@ describe('AuthProvider', () => {
         expect(userDiv).toHaveTextContent(mockUser.username);
 
         // Ensure the correct key is being used and mock is checked
-        expect(localStorage.setItem).toHaveBeenCalledWith('userId', mockUser._id);
+        expect(localStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(mockUser));
     });
 
     it('handles login failure correctly', async () => {
@@ -122,6 +122,6 @@ describe('AuthProvider', () => {
 
         const noUserDiv = await findByTestId('no-user');
         expect(noUserDiv).toHaveTextContent('No User');
-        expect(localStorage.removeItem).toHaveBeenCalledWith('userId');
+        expect(localStorage.removeItem).toHaveBeenCalledWith('user');
     });
 });
