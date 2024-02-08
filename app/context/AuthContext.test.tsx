@@ -42,7 +42,7 @@ describe('AuthProvider', () => {
         // Mock localStorage
         Storage.prototype.setItem = jest.fn();
         Storage.prototype.getItem = jest.fn((key) =>{
-            if(key === 'user') return mockUser;
+            if(key === 'user') return JSON.stringify(mockUser);
             return null;
         });
         Storage.prototype.removeItem = jest.fn();

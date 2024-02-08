@@ -3,21 +3,25 @@ import {useContext, useEffect, useState} from "react";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import {ClientContext} from "@contexts/ClientContext";
 import {ChildAccount} from "@models/child-account";
-import {ApprovalStatus, Transaction} from "@models/transaction";
+import {Transaction} from "@models/transaction";
 import {AuthContext} from "@contexts/AuthContext";
 import IClient from "@models/client";
+import {ChildPreview} from "./ChildPreview";
 
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<ChildAccount[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [pendingRequests, setPendingRequests] = useState<Transaction[]>([]);
+	const [loadingChildAccounts, setLoadingChildAccounts] = useState(true);
 	const client = useContext(ClientContext) as unknown as IClient
 
 	const handleCreateChildAccount = async (child: ChildAccount) => {
+		setLoadingChildAccounts(true);
 		const newChildAccount = await client.addChildUser(child);
 		if(!newChildAccount) return;
 		setChildAccounts([...childAccounts, newChildAccount]);
 		setIsDialogOpen(false);
+		setLoadingChildAccounts(false);
 	};
 
 	const {user} = useContext(AuthContext)!
@@ -25,10 +29,9 @@ export default function ParentDashboard() {
 		if (user && user._id && client) {
 			client.getChildAccounts(user._id)
 				.then((childAccounts:ChildAccount[]|null) => {
-					console.log(`responding to child account request`)
 					if(childAccounts) {
-						console.log(`child accounts: ${JSON.stringify(childAccounts)}`)
 						setChildAccounts(childAccounts);
+						setLoadingChildAccounts(false);
 					}
 				});
 		}
@@ -50,56 +53,18 @@ export default function ParentDashboard() {
 
 	},[client, user])
 
-	const getPendingRequestsForChild = (childId: string) => {
-		if(!pendingRequests || !pendingRequests.length) return;
-		return pendingRequests?.filter((request) => request.childId === childId);
-	}
 
-	const onRequestApproval = async (request: Transaction) => {
-		try{
-			const remainingPendingRequests = await client.approveRequest({...request, approved: ApprovalStatus.Approved});
-			const updatedChildAccounts = childAccounts.map((child) => {
-				if (child._id === request.childId) {
-					child.balance -= request.amount;
-				}
-				client.updateChildAccount(child);
-				return child;
-			});
-			setChildAccounts(updatedChildAccounts);
-			setPendingRequests(remainingPendingRequests);
-		} catch (error) {
-			console.log(error);
-		}
-	}
-
-	const onRequestDenied = async (request: Transaction) => {
-		try{
-			const remainingPrendingRequests = await client.rejectRequest({...request, approved: ApprovalStatus.Rejected});
-			setPendingRequests(remainingPrendingRequests);
-		} catch (error) {
-			console.log(error);
-		}
-	}
 
 	return(
 		<>
 			<div>Welcome to the parent dashboard</div>
 			<sub>More neat things to come soon!</sub>
-			<div className={"flex flex-col"}>
+			{loadingChildAccounts && <div className={"flex flex-col"}>Loading child accounts...</div>}
+			{!loadingChildAccounts &&
+			<div className={"flex flex-col grid-flow-row gap-4 lg:w-1/3 sm:w-full mt-4"}>
 				{childAccounts.map((child) => (
 					<div key={child._id}>
-						<div>{child.displayName}</div>
-						{/*<Button buttonText="Delete" className={'ml-4'} onButtonPressed={() => onDeletePressed(child.id)}/> to be implemented in issue #12*/}
-						{getPendingRequestsForChild(child._id!)?.map((request:Transaction) => (
-							<div id={request._id}  key={request._id} className={'my-4'}>
-								<div  data-testid={request._id}>Request ${request.amount}</div>
-								<div>Reason: {request.reason}</div>
-								<div className={'inline-flex'}>
-									<Button buttonText="Approve" onButtonPressed={() => onRequestApproval(request)}/>
-									<Button buttonText={"Deny"} className={"ml-4"}  onButtonPressed={() => onRequestDenied(request)}/>
-								</div>
-							</div>
-						))}
+						<ChildPreview child={child} onChildSelected={()=>console.log(`child selected`)}/>
 					</div>
 				))}
 				<div>
@@ -107,6 +72,7 @@ export default function ParentDashboard() {
 				</div>
 				{ user!==null ? <p>Logged in</p> : <p>Not logged in</p>}
 			</div>
+			}
 			<CreateChildAccountDialog isOpen={isDialogOpen} onRequestClose={()=> setIsDialogOpen(false)} onCreateChildAccount={handleCreateChildAccount}/>
 		</>
 	)

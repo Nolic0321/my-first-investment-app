@@ -65,7 +65,6 @@ export async function findMany<T>(collection: string, filter?: object): Promise<
             filter: filter?{...filter}:undefined
         }
 
-        console.log(`Body: ${JSON.stringify(body)}`);
         const response = await fetch(`${process.env.MONGODB_DATA_API_URL}/find`, {
             method: 'POST',
             body: JSON.stringify(body),
@@ -76,7 +75,7 @@ export async function findMany<T>(collection: string, filter?: object): Promise<
             }
         });
         var resJson = await response.json();
-        console.log(`resJson: ${JSON.stringify(resJson)}`);
+
         return resJson;
     } catch (e) {
         console.log(e);
