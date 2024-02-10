@@ -74,9 +74,7 @@ export async function findMany<T>(collection: string, filter?: object): Promise<
                 'api-key': process.env.MONGODB_DATA_API_KEY as string
             }
         });
-        var resJson = await response.json();
-
-        return resJson;
+        return await response.json();
     } catch (e) {
         console.log(e);
         return null;

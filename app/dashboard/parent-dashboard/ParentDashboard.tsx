@@ -3,7 +3,6 @@ import {useContext, useEffect, useState} from "react";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
 import {ClientContext} from "@contexts/ClientContext";
 import {ChildAccount} from "@models/child-account";
-import {Transaction} from "@models/transaction";
 import {AuthContext} from "@contexts/AuthContext";
 import IClient from "@models/client";
 import {ChildPreview} from "./ChildPreview";
@@ -11,15 +10,12 @@ import {ChildPreview} from "./ChildPreview";
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<ChildAccount[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [pendingRequests, setPendingRequests] = useState<Transaction[]>([]);
 	const [loadingChildAccounts, setLoadingChildAccounts] = useState(true);
 	const client = useContext(ClientContext) as unknown as IClient
 
 	const handleCreateChildAccount = async (child: ChildAccount) => {
 		setLoadingChildAccounts(true);
-		const newChildAccount = await client.addChildUser(child);
-		if(!newChildAccount) return;
-		setChildAccounts([...childAccounts, newChildAccount]);
+		setChildAccounts([...childAccounts, child]);
 		setIsDialogOpen(false);
 		setLoadingChildAccounts(false);
 	};
@@ -36,23 +32,6 @@ export default function ParentDashboard() {
 				});
 		}
 	}, [user, client]);
-
-	useEffect(()=>{
-
-		const fetchPendingRequests = async () => {
-			try {
-				if(!user?._id) return;
-				const requests = await client.getPendingRequestsForParent(user!._id);
-				setPendingRequests(requests);
-			} catch (error) {
-				console.log(error);
-			}
-		};
-
-		fetchPendingRequests();
-
-	},[client, user])
-
 
 
 	return(

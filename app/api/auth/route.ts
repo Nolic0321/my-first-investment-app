@@ -56,10 +56,17 @@ export const POST = async (req: Request) => {
                 if(!insertResult || !insertResult.insertedId) throw new Error('Failed to update balance');
 
                 const updatedAccount : ChildAccount = {...childAccount, balance: newBalance.balance};
-                const updateResult = await updateOneById<ChildAccount>(Collection.ChildAccounts,childAccount._id,updatedAccount);
+                const updateResult = await updateOneById<ChildAccount>(Collection.ChildAccounts,childAccount._id, {balance: updatedAccount.balance});
                 if(!updateResult) throw new Error('Failed to update account');
                 //Return the child account
                 return Response.json(updatedAccount);
+            }
+
+            if(childAccount.balance != latestBalance.balance) {
+                childAccount.balance = latestBalance.balance;
+                const updateResult = await updateOneById<ChildAccount>(Collection.ChildAccounts,childAccount._id,{balance: childAccount.balance});
+                if(!updateResult) throw new Error('Failed to update account');
+
             }
             //Return the child account
             return Response.json(childAccount);
