@@ -1,12 +1,13 @@
 import {expect, test} from '@playwright/test'
 import {baseUrl, loginAsMongoChild} from '@playwrightHelpers';
 import {Transaction} from "@models/transaction";
+import {Collection} from "@mongoDataApiHelper";
 
 
 test.describe('Mongo Spend Money Request', ()=>{
     let currentTransactionId = '';
     test.beforeEach(async ({page}) => {
-        await loginAsMongoChild(page);
+        await loginAsMongoChild(page, 'spendmoneychild');
     });
 
     test.afterEach(async ({request}) => {

@@ -23,9 +23,9 @@ export const loginAsMockParent = async (page:any) => {
     await performLogin(page, 'parent1', 'pass123');
 }
 
-export const loginAsMockChild = async (page:any) => {
+export const loginAsMockChild = async (page:any, username?:string) => {
     await configMockEnvironment(page);
-    await performLogin(page, 'child1', 'pass123')
+    await performLogin(page, username??'child1', 'pass123')
 }
 
 export const loginAsMongoParent = async (page:any) => {
@@ -34,9 +34,9 @@ export const loginAsMongoParent = async (page:any) => {
     await page.waitForTimeout(1000);
 }
 
-export const loginAsMongoChild = async (page:any) => {
+export const loginAsMongoChild = async (page:any, username?:string) => {
     await configMongoEnvironment(page);
-    await performLogin(page, 'firstmongochild', 'pass123');
+    await performLogin(page, username??'firstmongochild', 'pass123');
     await page.waitForTimeout(1000);
 }
 

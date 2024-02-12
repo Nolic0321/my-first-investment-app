@@ -19,24 +19,4 @@ test.describe('Mongo Dashboard', ()=>{
         await expect(page.getByText('Your current balance is')).toBeVisible();
         await expect(page.getByText('Today your money made you')).toBeVisible();
     });
-
-    // test('should increase childs balance by 1 day of interest if it has been one day since last login', async ({page, request}) => {let extractedId;
-    //     await page.route('**/api/auth', async (route, request) => {
-    //       // Continue the request
-    //       await route.continue();
-        
-    //       // Wait for the response
-    //       const response = await request.response();
-        
-    //       // Extract the data from the response
-    //       if (response) {
-    //         const data = await response.json();
-    //         extractedId = data.id; // Replace 'id' with the actual property name
-    //       }
-    //     });
-        
-
-    //     //Cleanup
-    //     await request.delete(`${baseUrl()}/api/balance/test/${extractedId}`);
-    // });
 });

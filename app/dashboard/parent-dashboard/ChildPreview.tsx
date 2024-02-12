@@ -76,8 +76,8 @@ export function ChildPreview({child}: ChildPreviewProps) {
                         </svg>
                     </div>
                 </div>}
-            {!loadingRequests && pendingRequests.length === 0 && <div>No pending requests</div>}
-            {!loadingRequests && pendingRequests.map((request: Transaction) => (
+            {!loadingRequests && pendingRequests?.length === 0 && <div>No pending requests</div>}
+            {!loadingRequests && pendingRequests?.map((request: Transaction) => (
                 <div id={request._id} key={request._id} className={'my-4'}>
                     <div data-testid={request._id}>Request ${request.amount}</div>
                     <div>Reason: {request.reason}</div>
