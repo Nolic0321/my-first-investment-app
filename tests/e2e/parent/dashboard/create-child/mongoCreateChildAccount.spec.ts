@@ -40,7 +40,7 @@ test.describe('Mock Create Child Account', async () => {
 
         const interestRateInput = page.getByLabel('Interest');
         await expect(interestRateInput).toBeVisible();
-        expect(await interestRateInput.inputValue()).toBe('');
+        expect(await interestRateInput.inputValue()).toBe('0');
     });
 
 

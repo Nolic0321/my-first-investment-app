@@ -1,17 +1,17 @@
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import {ChildAccount} from "@models/child-account";
-import {findMany, updateOneById} from "@mongoDataApiHelper";
+import {Collection, findMany, updateOneById} from "@mongoDataApiHelper";
 
 export async function GET(req: Request, {params}:{params:{id:string}}){
     try{
-        const childAccountResults = (await findMany<ChildAccount>('childaccounts',{parentId: params.id}));
-        if(!childAccountResults?.documents) throw new Error('No child accounts found');
+        const childAccountResults = await findMany<ChildAccount>(Collection.ChildAccounts,{parentId: params.id});
+        if(!childAccountResults) return Response.json([]);
         const childAccounts = childAccountResults.documents;
-        const transactions = await findMany<Transaction[]>('transactions',{
+        const transactions = await findMany<Transaction[]>(Collection.Transactions,{
             childId: {$in: childAccounts!.map(childAccount => { return childAccount._id})},
             approved: ApprovalStatus.Pending
         });
-        console.log(`childAccounts: ${JSON.stringify(transactions?.documents)}`)
+
         return Response.json(transactions?.documents);
     }catch (error){
         return new Response(null,{
@@ -24,9 +24,9 @@ export async function GET(req: Request, {params}:{params:{id:string}}){
 export async function POST(req: Request, {params}:{params:{id:string}}){
     try {
         const requestData = await req.json() as Transaction;
-        const newTransactionId = await updateOneById('transactions',requestData._id, requestData);
+        const newTransactionId = await updateOneById(Collection.Transactions,requestData._id, requestData);
         if(!newTransactionId?.modifiedCount) throw new Error('Failed to request transaction');
-        const pendingTransactions = await findMany<Transaction>('transactions', {
+        const pendingTransactions = await findMany<Transaction>(Collection.Transactions, {
             childId: requestData.childId,
             approved: {$eq: ApprovalStatus.Pending}
         })

@@ -1,5 +1,5 @@
-import {Locator, expect, test} from '@playwright/test';
-import {configMockEnvironment, configMongoEnvironment, loginAsMockChild, loginAsMockParent, loginAsMongoChild, loginAsMongoParent} from "@playwrightHelpers";
+import {expect, test} from '@playwright/test';
+import {configMongoEnvironment, loginAsMongoChild} from "@playwrightHelpers";
 
 test.describe('Mongo Dashboard', ()=>{
     let accountBalance: number;

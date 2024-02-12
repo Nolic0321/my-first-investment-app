@@ -67,4 +67,35 @@ describe('Login', () => {
         });
         expect(screen.getByText('Login Failed')).toBeInTheDocument();
     });
+
+    it('should call login when the enter key is pressed', async () => {
+        const mockLogin = jest.fn();
+        mockLogin.mockResolvedValue(true);
+        const mockLogout = jest.fn();
+        const mockUser = null;
+        const mockAuthContext = {
+            login: mockLogin,
+            logout: mockLogout,
+            user: mockUser
+        };
+
+        render(
+            <AuthContext.Provider value={mockAuthContext}>
+                <Login/>
+            </AuthContext.Provider>
+        );
+
+        const usernameInput = screen.getByLabelText('Username');
+        const passwordInput = screen.getByLabelText('Password');
+
+        await userEvent.type(usernameInput, 'testuser');
+        await userEvent.type(passwordInput, 'testpassword');
+        await userEvent.type(passwordInput, '{enter}');
+
+        expect(mockLogin).toHaveBeenCalledWith({
+            username: 'testuser',
+            password: 'testpassword',
+        });
+        expect(screen.queryByText('Login Failed')).not.toBeInTheDocument();
+    });
 });

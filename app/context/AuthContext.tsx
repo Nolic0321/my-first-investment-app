@@ -27,28 +27,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = React.memo(({children})
     // Check localStorage for userId
     useEffect(()=>{
         if(!clientContext) return;
-        const storedUserId = localStorage.getItem("userId");
-        if(storedUserId) {
-            clientContext.getUser(storedUserId)
-                .then((user) => {
-                    if(user) {
-                        setUser(user);
-                    }
-                });
+        const storedUser = localStorage.getItem("user");
+        if(storedUser && !user) {
+            setUser(JSON.parse(storedUser));
         }
-    },[clientContext]);
+    },[clientContext, user]);
 
     const login = async (userData: LoginData) => {
         const user = await clientContext.auth(userData);
         if(!user || !user._id) return false;
         setUser(user);
-        localStorage.setItem("userId", user._id);
+        localStorage.setItem("user", JSON.stringify({...user, password:undefined}));
         return true;
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem("userId");
+        localStorage.removeItem("user");
     };
     return (
         <AuthContext.Provider value={{login, logout, user}}>

@@ -68,7 +68,8 @@ export default class MongoDbClient implements IClient {
 
     async getChildAccounts(parentId: string, options?: Option | undefined): Promise<ChildAccount[]|null> {
         try{
-            return await this.get<ChildAccount[]>(`/api/parent/${parentId}/childaccount`);
+            const url = `/api/parent/${parentId}/childaccount`;
+            return await this.get<ChildAccount[]>(url);
         } catch (e) {
             console.log(e);
             return null;
