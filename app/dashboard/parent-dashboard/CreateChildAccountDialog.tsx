@@ -58,11 +58,44 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
                         <Dialog.Title>Create Child Account</Dialog.Title>
                         <div>
                             <div className="isolate -space-y-px rounded-md shadow-sm">
-                                <LabelledInput name={"display-name"} label={"Display Name"} inputText={childAccountForm.displayName} onInputChanged={(value) =>handleChange('displayName',value)} placeholder={"John Doe"} className={'rounded-b-none'}/>
-                                <LabelledInput name={'username'} label={"Username"} inputText={childAccountForm.username} onInputChanged={(value)=>handleChange('username',value)} placeholder={"johndoe"} className={'rounded-none'}/>
-                                <LabelledInput name={'password'} label={"Password"} inputText={childAccountForm.password} onInputChanged={(value)=>handleChange('password',value)} placeholder={"********"} className={'rounded-none'}/>
-                                <LabelledInput name={'starting-balance'} label={"Starting Balance"} inputText={childAccountForm.balance.toString()} onInputChanged={(value:string)=>handleChange('balance', parseFloat(value))} placeholder={"100"} className={'rounded-none'}/>
-                                <LabelledInput name={'interest'} label={"Interest"} inputText={childAccountForm.interest.toString()} onInputChanged={(value) => handleChange('interest', parseInt(value))} placeholder={"5"} className={'rounded-t-none'} footerDisplay={"%"}/>
+                                <LabelledInput
+                                    name={"display-name"}
+                                    label={"Display Name"}
+                                    inputText={childAccountForm.displayName}
+                                    onInputChanged={(value) =>handleChange('displayName',value)}
+                                    placeholder={"John Doe"}
+                                    className={'rounded-b-none'}/>
+                                <LabelledInput
+                                    name={'username'}
+                                    label={"Username"}
+                                    inputText={childAccountForm.username}
+                                    onInputChanged={(value)=>handleChange('username',value)}
+                                    placeholder={"johndoe"}
+                                    className={'rounded-none'}/>
+                                <LabelledInput
+                                    name={'password'}
+                                    label={"Password"}
+                                    inputText={childAccountForm.password}
+                                    onInputChanged={(value)=>handleChange('password',value)}
+                                    placeholder={"********"}
+                                    className={'rounded-none'}/>
+                                <LabelledInput
+                                    name={'starting-balance'}
+                                    label={"Starting Balance"}
+                                    type={'number'}
+                                    inputText={childAccountForm.balance.toString()}
+                                    onBlur={(inputValue)=>{handleChange('balance', parseFloat(inputValue))}}
+                                    onInputChanged={(value:string)=>handleChange('balance',value)}
+                                    placeholder={"100"}
+                                    className={'rounded-none'}/>
+                                <LabelledInput
+                                    name={'interest'}
+                                    label={"Interest"}
+                                    inputText={childAccountForm.interest.toString()}
+                                    onInputChanged={(value) => handleChange('interest', parseInt(value))}
+                                    placeholder={"5"}
+                                    className={'rounded-t-none'}
+                                    footerDisplay={"%"}/>
                             </div>
                             <Button buttonText={'Create Account'} onButtonPressed={handleOnCreate}/>
                         </div>
