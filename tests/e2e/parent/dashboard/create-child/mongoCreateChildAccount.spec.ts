@@ -51,7 +51,7 @@ test.describe('Mock Create Child Account', async () => {
             displayName: 'Test Child',
             username: 'testchild',
             password: 'password',
-            balance: 100,
+            balance: 100.21,
             interest: 5,
             parentId: 'test'
         }
@@ -66,6 +66,8 @@ test.describe('Mock Create Child Account', async () => {
         await page.getByLabel('Username').fill(newChildAccount.username);
         await page.getByLabel('Password').fill(newChildAccount.password);
         await page.getByLabel('Starting Balance').fill(newChildAccount.balance.toString());
+        expect(await page.getByLabel('Starting Balance').inputValue()).toBe(newChildAccount.balance.toString()); //Check that the input is working as expected
+
         await page.getByLabel('Interest').fill(newChildAccount.interest.toString());
         await page.getByRole('button', {name: 'Create Account'}).click();
 
