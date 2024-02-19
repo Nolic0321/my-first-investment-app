@@ -28,7 +28,8 @@
     "next": "14.0.1",
     "react": "^18",
     "react-dom": "^18",
-    "react-modal": "^3.16.1"
+    "react-modal": "^3.16.1",
+    "@react-buddy/ide-toolbox-next": "^2.4.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.41.1",

@@ -2,8 +2,8 @@ export default function Home() {
 
     return (
         <>
-            <main className={"prose text-white"}>
-                <h1 className={"text-white"}>Welcome to My First Investment App!</h1>
+            <main className={"prose dark:prose-invert"}>
+                <h1 className={""}>Welcome to My First Investment App!</h1>
                 <p>This application is designed to help parents save money and teach children about the benefits of saving. Here, you can simulate the process of earning interest on savings, without
                     any real money being involved.</p>
                 <p>Parents, instead of paying a weekly allowance, you can &ldquo;pay&rdquo; less than $1 a week in interest. This way, you can save more money and your children can learn about the impact of their
