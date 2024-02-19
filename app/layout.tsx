@@ -18,14 +18,14 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
         <html lang="en">
-        <body className={inter.className}>
+        <body className={`${inter.className}`}>
         <SpeedInsights/>
         <ClientProvider>
             <AuthProvider>
                 <Nav/>
-                    <div id={"main"} className={"mt-8"}>
-                        {children}
-                    </div>
+                <div id={"main"} className={"mt-8 flex justify-center h-max mx-auto max-w-3xl"}>
+                    {children}
+                </div>
                 <Analytics/>
             </AuthProvider>
         </ClientProvider>

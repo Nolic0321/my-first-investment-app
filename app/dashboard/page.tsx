@@ -13,13 +13,12 @@ export default function Dashboard() {
 			{user.isChildAccount ? <ChildDashboard/> : <ParentDashboard/>}
 		</div>
 
-	:	<div className={"xl:w-1/3 sm:w-full"}>
-			<p className={"mb-4"}>Not logged in</p>
+	:	<div className={"sm:w-full"}>
 			<Login/>
 		</div>;
 
 	return (
-		<div className={"mx-4"}>
+		<div className={""}>
 			{user ? null : <h1 className={"mb-4"}>Welcome to the Dashboard</h1>}
 			{renderUserStatus}
 		</div>

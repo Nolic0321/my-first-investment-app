@@ -76,7 +76,7 @@ export default function ChildDashboard() {
     }
 
     return (
-        <div className={'flex-col w-full'}>
+        <div className={'flex-col'}>
             {!childAccount && <div>Loading...</div>}
             {childAccount && childAccount.balance &&
                 <div>

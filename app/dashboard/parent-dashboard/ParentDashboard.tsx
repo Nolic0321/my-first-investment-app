@@ -40,7 +40,7 @@ export default function ParentDashboard() {
 			<sub>More neat things to come soon!</sub>
 			{loadingChildAccounts && <div className={"flex flex-col"}>Loading child accounts...</div>}
 			{!loadingChildAccounts &&
-			<div className={"flex flex-col grid-flow-row gap-4 lg:w-1/3 sm:w-full mt-4"}>
+			<div className={"flex flex-col grid-flow-row gap-4 mt-4"}>
 				{childAccounts.map((child) => (
 					<div key={child._id}>
 						<ChildPreview child={child} onChildSelected={()=>console.log(`child selected`)}/>
@@ -49,7 +49,6 @@ export default function ParentDashboard() {
 				<div>
 					<Button className={"my-4"} buttonText="Create Child Account" onButtonPressed={() => setIsDialogOpen(true)}/>
 				</div>
-				{ user!==null ? <p>Logged in</p> : <p>Not logged in</p>}
 			</div>
 			}
 			<CreateChildAccountDialog isOpen={isDialogOpen} onRequestClose={()=> setIsDialogOpen(false)} onCreateChildAccount={handleCreateChildAccount}/>
