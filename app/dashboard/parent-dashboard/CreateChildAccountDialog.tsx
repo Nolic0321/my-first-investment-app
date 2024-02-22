@@ -3,8 +3,9 @@ import {Dialog} from "@headlessui/react";
 import Button from "@components/Button";
 import LabelledInput from "@components/LabeledInput";
 import {ChildAccount} from "@models/child-account";
-import {AuthContext} from "@contexts/AuthContext";
-import {ClientContext} from "@contexts/ClientContext";
+import {useAppSelector} from "@hooks/hooks";
+import {selectUser} from "@reducers/userSlice";
+import {selectClient} from "@reducers/clientSlice";
 
 interface CreateChildAccountDialogProps {
     isOpen: boolean;
@@ -21,8 +22,8 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
         balance:0,
         interest:0
     });
-    const {user} = useContext(AuthContext)!;
-    const client = useContext(ClientContext)!;
+    const user = useAppSelector(selectUser);
+    const client = useAppSelector(selectClient);
 
     const handleChange = (field:string, value:string|number) => {
         setChildAccountForm(prevState => ({...prevState, [field]: value}));

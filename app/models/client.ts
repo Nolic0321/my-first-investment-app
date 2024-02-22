@@ -1,8 +1,8 @@
-import {LoginData} from "@contexts/AuthContext";
 import {Option} from "@models/option";
 import {ChildAccount} from "@models/child-account";
 import {Transaction} from "@models/transaction";
 import {IUser} from "@models/user";
+import {LoginData} from "@components/Login";
 
 export default interface IClient {
     auth(userData: LoginData, options?:Option): Promise<IUser | null>;

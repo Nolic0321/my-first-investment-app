@@ -1,17 +1,18 @@
 import Button from "../../components/Button";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {CreateChildAccountDialog} from "./CreateChildAccountDialog";
-import {ClientContext} from "@contexts/ClientContext";
 import {ChildAccount} from "@models/child-account";
-import {AuthContext} from "@contexts/AuthContext";
-import IClient from "@models/client";
 import {ChildPreview} from "./ChildPreview";
+import {selectClient} from "@reducers/clientSlice";
+import {useAppSelector} from "@hooks/hooks";
+import {selectUser} from "@reducers/userSlice";
 
 export default function ParentDashboard() {
+	const user = useAppSelector(selectUser);
+	const client = useAppSelector(selectClient);
 	const [childAccounts, setChildAccounts] = useState<ChildAccount[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [loadingChildAccounts, setLoadingChildAccounts] = useState(true);
-	const client = useContext(ClientContext) as unknown as IClient
 
 	const handleCreateChildAccount = async (child: ChildAccount) => {
 		setLoadingChildAccounts(true);
@@ -20,7 +21,6 @@ export default function ParentDashboard() {
 		setLoadingChildAccounts(false);
 	};
 
-	const {user} = useContext(AuthContext)!
 	useEffect(()=>{
 		if (user && user._id && client) {
 			client.getChildAccounts(user._id)

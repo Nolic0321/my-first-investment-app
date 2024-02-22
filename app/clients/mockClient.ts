@@ -1,5 +1,5 @@
 import IClient from '@models/client';
-import {LoginData} from "@contexts/AuthContext";
+import {LoginData} from "@components/Login";
 import {ChildAccount} from "@models/child-account";
 import {IUser} from "@models/user";
 import {ApprovalStatus, Transaction} from "@models/transaction";

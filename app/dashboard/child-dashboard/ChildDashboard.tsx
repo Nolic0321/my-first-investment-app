@@ -1,12 +1,13 @@
 import {useContext, useEffect, useState} from "react";
 import Button from "../../components/Button";
-import {ClientContext} from "@contexts/ClientContext";
 import LabelledInput from "../../components/LabeledInput";
 import {ChildAccount} from "@models/child-account";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";
-import {AuthContext} from "@contexts/AuthContext";
 import IClient from "@models/client";
+import {useAppSelector} from "@hooks/hooks";
+import {selectUser} from "@reducers/userSlice";
+import {selectClient} from "@reducers/clientSlice";
 
 const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): number => {
     const dailyInterestRate = yearlyInterestRate / 365;
@@ -14,7 +15,8 @@ const calculateDailyEarnings = (balance: number, yearlyInterestRate: number): nu
 };
 
 export default function ChildDashboard() {
-    const {user} = useContext(AuthContext)!;
+    const user = useAppSelector(selectUser);
+    const client = useAppSelector(selectClient);
     const [childAccount, setChildAccount] = useState<ChildAccount | null>(null);
     const [dailyEarnings, setDailyEarnings] = useState(0);
     const [pretendSpent, setPretendSpent] = useState("");
@@ -23,7 +25,6 @@ export default function ChildDashboard() {
     const [requestReason, setRequestReason] = useState("");
     const [pendingRequests, setPendingRequests] = useState<Transaction[]>([]);
     const [error, setError] = useState<string>("");
-    const client = useContext(ClientContext) as unknown as IClient;
 
     useEffect(() => {
         if (!user) return;

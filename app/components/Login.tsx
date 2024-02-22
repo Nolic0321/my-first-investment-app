@@ -1,18 +1,32 @@
-'use client'
-import {useContext, useState} from "react";
+"use client";
+import {useState} from "react";
 import Button from "./Button";
-import {AuthContext} from "@contexts/AuthContext";
 import Input from "@components/Input";
+import {useAppSelector, useAppDispatch} from "@hooks/hooks";
+import {selectUser, setUser} from "@reducers/userSlice";
+import {selectClient} from "@reducers/clientSlice";
+
+export interface LoginData {
+	username: string,
+	password: string
+}
 
 export default function Login() {
+	const user = useAppSelector(selectUser);
+	const client = useAppSelector(selectClient);
+	const dispatch = useAppDispatch();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const authContext = useContext(AuthContext);
 	const [loginFailed, setLoginFailed] = useState(false);
 	const login = async () => {
-		const loginSuccess = await authContext?.login({username: username, password: password});
+		const user = await client.auth({username: username, password: password});
+		const loginSuccess = user !== null;
+		if (loginSuccess) {
+			dispatch(setUser(user));
+		}
 		setLoginFailed(!loginSuccess);
-	}
+
+	};
 
 	return (
 		<div className={"rounded-md bg-gray-800 p-4"}>
@@ -24,7 +38,9 @@ export default function Login() {
 					inputText={username}
 					inputName={"username"}
 					onInputChanged={(e) => setUsername(e)}
-					onKeyPress={(event) => {event.key === 'Enter' ? login() : null}}
+					onKeyPress={(event) => {
+						event.key === "Enter" ? login() : null;
+					}}
 				/>
 			</div>
 			<div className={"flex-col mb-3"}>
@@ -35,10 +51,12 @@ export default function Login() {
 					inputName={"password"}
 					inputText={password}
 					onInputChanged={(e) => setPassword(e)}
-					onKeyPress={(event) => {event.key === 'Enter' ? login() : null}}
+					onKeyPress={(event) => {
+						event.key === "Enter" ? login() : null;
+					}}
 				/>
 			</div>
-			{loginFailed ? <div className={"text-red-500"}>Login Failed</div>:null}
+			{loginFailed ? <div className={"text-red-500"}>Login Failed</div> : null}
 			<Button className={"my-4"} buttonText="Login" onButtonPressed={login}/>
 		</div>
 	);

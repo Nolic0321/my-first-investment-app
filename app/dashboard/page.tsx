@@ -3,10 +3,11 @@ import {useContext} from "react";
 import Login from "../components/Login";
 import ChildDashboard from "./child-dashboard/ChildDashboard";
 import ParentDashboard from "./parent-dashboard/ParentDashboard";
-import {AuthContext} from "@contexts/AuthContext";
+import {useAppSelector} from "@hooks/hooks";
+import {selectUser} from "@reducers/userSlice";
 
 export default function Dashboard() {
-	const {user} = useContext(AuthContext)!;
+	const user = useAppSelector(selectUser);
 
 	const renderUserStatus = user
 	?	<div>

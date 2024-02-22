@@ -11,7 +11,7 @@ describe('Login', () => {
         const mockUser = null;
         const mockAuthContext = {
             login: mockLogin,
-            logout: mockLogout,
+            clearUser: mockLogout,
             user: mockUser
         };
 
@@ -43,7 +43,7 @@ describe('Login', () => {
         const mockUser = null;
         const mockAuthContext = {
             login: mockLogin,
-            logout: mockLogout,
+            clearUser: mockLogout,
             user: mockUser
         };
 
@@ -75,7 +75,7 @@ describe('Login', () => {
         const mockUser = null;
         const mockAuthContext = {
             login: mockLogin,
-            logout: mockLogout,
+            clearUser: mockLogout,
             user: mockUser
         };
 

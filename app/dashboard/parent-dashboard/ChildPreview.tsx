@@ -2,8 +2,9 @@ import {ChildAccount} from "@models/child-account";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import Button from "@components/Button";
 import {useContext, useEffect, useState} from "react";
-import {ClientContext} from "@contexts/ClientContext";
 import IClient from "@models/client";
+import {useAppSelector} from "@hooks/hooks";
+import {selectClient} from "@reducers/clientSlice";
 
 export type ChildPreviewProps = {
     child: ChildAccount;
@@ -15,7 +16,7 @@ export function ChildPreview({child}: ChildPreviewProps) {
     const [loading, setLoading] = useState(true);
     const [pendingRequests, setPendingRequests] = useState<Transaction[]>([]);
     const [loadingRequests, setLoadingRequests] = useState(true);
-    const client = useContext(ClientContext) as unknown as IClient
+    const client = useAppSelector(selectClient);
 
     useEffect(() => {
         getPendingRequestsForChild()
