@@ -35,11 +35,11 @@ export default class MongoDbClient implements IClient {
         }
     }
 
-    async updateChildAccount(user: IUser, options?: Option | undefined): Promise<IUser|null> {
+    async updateChildAccount(user: IUser, options?: Option | undefined): Promise<ChildAccount|null> {
         try{
             const response = await this.patch<UpdateOneResponse>(`/api/childaccount/${user._id}`, user);
             if(response?.modifiedCount === 0) console.log('no user updated');
-            return user as IUser;
+            return user as ChildAccount;
         } catch (e) {
             console.log(e);
             return null;
