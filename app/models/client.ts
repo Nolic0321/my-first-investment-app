@@ -14,7 +14,7 @@ export default interface IClient {
 
     //Child CRUD
     addChildUser(childData: ChildAccount, options?:Option): Promise<ChildAccount | null>;
-    updateChildAccount(child: IUser, options?:Option): Promise<IUser | null>;
+    updateChildAccount(child: IUser, options?:Option): Promise<ChildAccount | null>;
     deleteChildAccount(childId: string, options?:Option): Promise<void>;
     getChildAccount(childUserId: string): Promise<ChildAccount>;
     getChildAccounts(parentId: string, options?:Option): Promise<ChildAccount[]|null>;

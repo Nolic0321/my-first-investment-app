@@ -23,7 +23,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
         <ClientProvider>
             <AuthProvider>
                 <Nav/>
-                <div id={"main"} className={"mt-8 flex justify-center h-max mx-auto max-w-3xl"}>
+                <div id={"main"} className={"mt-8 flex justify-center h-max lg:mx-auto w-full lg:max-w-3xl"}>
                     {children}
                 </div>
                 <Analytics/>

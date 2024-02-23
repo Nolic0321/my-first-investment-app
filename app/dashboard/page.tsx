@@ -9,7 +9,7 @@ export default function Dashboard() {
 	const {user} = useContext(AuthContext)!;
 
 	const renderUserStatus = user
-	?	<div>
+	?	<div className={"md:w-full"}>
 			{user.isChildAccount ? <ChildDashboard/> : <ParentDashboard/>}
 		</div>
 
@@ -18,7 +18,7 @@ export default function Dashboard() {
 		</div>;
 
 	return (
-		<div className={""}>
+		<div className={"md:w-full"}>
 			{user ? null : <h1 className={"mb-4"}>Welcome to the Dashboard</h1>}
 			{renderUserStatus}
 		</div>
