@@ -1,9 +1,10 @@
 import {ChildAccount} from "@models/child-account";
 import {ApprovalStatus, Transaction} from "@models/transaction";
-import Button from "@components/button/Button";
 import {useContext, useEffect, useState} from "react";
 import {ClientContext} from "@contexts/ClientContext";
 import IClient from "@models/client";
+import PrimaryButton from "@components/button/PrimaryButton";
+import SecondaryButton from "@components/button/SecondaryButton";
 
 export type ChildPreviewProps = {
     child: ChildAccount;
@@ -51,7 +52,7 @@ export function ChildPreview({child}: ChildPreviewProps) {
     }
 
     return (
-        <div className={'shadow-lg ring-1 rounded-lg text-black p-2 relative ring-emerald-700 bg-gray-100 dark:ring-emerald-300 dark:bg-gray-300 '}>
+        <div className={'shadow-lg ring-1 rounded-lg text-black p-2 relative ring-emerald-700 bg-gray-200 dark:ring-emerald-300 '}>
             {/*<Button buttonText="Delete" className={'ml-4'} onButtonPressed={() => onDeletePressed(child.id)}/> to be implemented in issue #12*/}
             {loadingRequests && <div>Loading requests...</div>}
             {loading &&
@@ -85,8 +86,8 @@ export function ChildPreview({child}: ChildPreviewProps) {
                             <div data-testid={request._id}>Request ${request.amount}</div>
                             <div>Reason: {request.reason}</div>
                             <div className={'inline-flex'}>
-                                <Button className={'bg-gray-400'} buttonText="Approve" onButtonPressed={() => onRequestApproval(request)}/>
-                                <Button buttonText={"Deny"} className={"bg-gray-400 ml-4"} onButtonPressed={() => onRequestDenied(request)}/>
+                                <PrimaryButton buttonText="Approve" onButtonPressed={() => onRequestApproval(request)}/>
+                                <SecondaryButton buttonText={"Deny"} className={"ml-4"} onButtonPressed={() => onRequestDenied(request)}/>
                             </div>
                         </div>
                     ))}
