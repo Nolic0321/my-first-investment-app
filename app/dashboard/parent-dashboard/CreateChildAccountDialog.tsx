@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {Dialog} from "@headlessui/react";
-import Button from "@components/Button";
+import Button from "@components/button/Button";
 import LabelledInput from "@components/LabeledInput";
 import {ChildAccount} from "@models/child-account";
 import {AuthContext} from "@contexts/AuthContext";

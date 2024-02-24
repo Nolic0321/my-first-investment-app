@@ -1,8 +1,8 @@
 'use client'
 import {useContext, useState} from "react";
-import Button from "./Button";
 import {AuthContext} from "@contexts/AuthContext";
 import Input from "@components/Input";
+import PrimaryButton from "@components/button/PrimaryButton";
 
 export default function Login() {
 	const [username, setUsername] = useState("");
@@ -39,7 +39,7 @@ export default function Login() {
 				/>
 			</div>
 			{loginFailed ? <div className={"text-red-500"}>Login Failed</div>:null}
-			<Button className={"my-4"} buttonText="Login" onButtonPressed={login}/>
+			<PrimaryButton className={"my-4"} buttonText="Login" onButtonPressed={login}/>
 		</div>
 	);
 }

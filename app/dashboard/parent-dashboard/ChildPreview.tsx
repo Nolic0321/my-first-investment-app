@@ -1,6 +1,6 @@
 import {ChildAccount} from "@models/child-account";
 import {ApprovalStatus, Transaction} from "@models/transaction";
-import Button from "@components/Button";
+import Button from "@components/button/Button";
 import {useContext, useEffect, useState} from "react";
 import {ClientContext} from "@contexts/ClientContext";
 import IClient from "@models/client";
