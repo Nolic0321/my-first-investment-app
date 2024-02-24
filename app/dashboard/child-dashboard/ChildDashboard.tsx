@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react";
-import Button from "../../components/Button";
+import Button from "@components/button/Button";
 import {ClientContext} from "@contexts/ClientContext";
 import LabelledInput from "../../components/LabeledInput";
 import {ChildAccount} from "@models/child-account";

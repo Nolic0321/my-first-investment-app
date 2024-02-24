@@ -1,6 +1,6 @@
 import {render, screen} from "@testing-library/react";
 import {expect, it} from "@jest/globals";
-import Button from "@components/Button";
+import Button from "@components/button/Button";
 
 it('Should render the button', () => {
     render(<Button buttonText="Click me" onButtonPressed={() => {}}/>);
