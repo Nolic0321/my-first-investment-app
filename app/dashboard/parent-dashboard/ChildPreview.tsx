@@ -18,15 +18,12 @@ export function ChildPreview({child}: ChildPreviewProps) {
     const client = useContext(ClientContext) as unknown as IClient
 
     useEffect(() => {
-        getPendingRequestsForChild()
-    });
-    const getPendingRequestsForChild = async () => {
-
-        const pendingRequestsResponse = await client.getPendingRequestsForChild(child._id);
-        setPendingRequests(pendingRequestsResponse);
-        setLoadingRequests(false);
-        setLoading(false);
-    }
+        client.getPendingRequestsForChild(child._id).then(result =>{
+			setPendingRequests(result);
+			setLoadingRequests(false);
+			setLoading(false);
+		});
+    }, [child._id, client]);
 
     const onRequestApproval = async (request: Transaction) => {
         try {
