@@ -37,10 +37,8 @@ export default class MockClient implements IClient {
         return Promise.resolve(mockUsers);
     }
 
-    updateChildAccount(user: IUser): Promise<IUser|null>{
-        const userIndex = mockUsers.findIndex(u => u._id === user._id);
-        mockUsers[userIndex] = user;
-        return Promise.resolve(user);
+    updateChildAccount(user: IUser): Promise<ChildAccount|null>{
+        return Promise.resolve(mockChildren.find(child => child._id === user._id)??null);
     }
 
     addUser(userData: IUser): Promise<IUser | void>{

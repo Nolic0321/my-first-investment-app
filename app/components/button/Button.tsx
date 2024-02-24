@@ -7,7 +7,7 @@ export type ButtonProps = {
 export default function Button({buttonText, onButtonPressed, className}: ButtonProps) {
     return (
         <button
-            className={`button rounded-md px-2 py-1 text-sm font-semibold shadow-sm dark:text-gray-950 text-gray-200 ${className || ''}`}
+            className={` ${className || ''} button rounded-md px-2 py-1 text-sm font-semibold shadow-sm text-emerald-50`}
             onClick={onButtonPressed}>
             {buttonText}
         </button>
