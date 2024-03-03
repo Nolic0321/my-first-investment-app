@@ -19,11 +19,11 @@ export function ChildPreview({child}: ChildPreviewProps) {
     const client = useContext(ClientContext) as unknown as IClient
 
     useEffect(() => {
-        client.getPendingRequestsForChild(child._id).then(result =>{
-			setPendingRequests(result);
-			setLoadingRequests(false);
-			setLoading(false);
-		});
+        client.getPendingRequestsForChild(child._id).then(result => {
+            setPendingRequests(result);
+            setLoadingRequests(false);
+            setLoading(false);
+        });
     }, [child._id, client]);
 
     const onRequestApproval = async (request: Transaction) => {
@@ -52,7 +52,8 @@ export function ChildPreview({child}: ChildPreviewProps) {
     }
 
     return (
-        <div className={'shadow-lg ring-1 rounded-lg text-black p-2 relative ring-emerald-700 bg-gray-200 dark:ring-emerald-300 '}>
+        <div
+            className={`shadow-lg  rounded-lg text-black  pl-2 pr-0 pb-0 relative  ${pendingRequests.length === 0 ? 'ring-1 bg-gray-200 ring-emerald-700 dark:ring-emerald-300' : 'bg-gray-200 ring-blue-700 ring-2'} z-10`}>
             {/*<Button buttonText="Delete" className={'ml-4'} onButtonPressed={() => onDeletePressed(child.id)}/> to be implemented in issue #12*/}
             {loadingRequests && <div>Loading requests...</div>}
             {loading &&
@@ -71,14 +72,24 @@ export function ChildPreview({child}: ChildPreviewProps) {
             <div className={'flex justify-between'}>
                 <div className={'flex flex-col w-full'}>
                     <div className={'flex flex-row justify-between'}>
-                        <div className={'flex flex-col'}>
+                        <div className={'flex flex-col pb-2 pt-2'}>
                             <div className={'text-base'}>{child.displayName}</div>
                             <div className={'font-bold text-2xl'}>${child.balance}</div>
                             <div className={'text-sm text-gray-400'}>{child.interest}% Interest</div>
+                            {pendingRequests.length > 0 &&
+                                <div className={'flex items-center text-sm w-full h-full font-bold rounded-none rounded-tr-lg bg-transparent text-gray-900 cursor-pointer user-select:none'}
+                                     onClick={() => setShowRequests(!showRequests)}><span>{pendingRequests.length} request{pendingRequests.length > 1 ? 's' : ''}</span><span
+                                    className="material-symbols-outlined">
+expand_more
+</span></div>}
                         </div>
                         <div className={'ml-3'}>
-                            {pendingRequests.length > 0 && <div className={'font-bold rounded-lg bg-gray-400 text-xs px-1.5 text-gray-900 cursor-pointer user-select:none'}
-                                                                onClick={() => setShowRequests(!showRequests)}>{pendingRequests.length} request{pendingRequests.length > 1 ? 's' : ''}</div>}
+                        </div>
+                        <div className={'flex flex-col overflow-clip w-20'}>
+                            <PrimaryButton className={`!w-full !h-full -z-20 !rounded-b-none  !rounded-l-none ${pendingRequests.length > 0 ? '!rounded-t-none' : '!rounded-tr-lg'}`} buttonText={'add'}
+                                           onButtonPressed={() => console.log('add pressed')}/>
+                            <PrimaryButton className={`!bg-red-500 !w-full !h-full -z-20 !rounded-br-lg  !rounded-l-none !rounded-t-none ${pendingRequests.length > 0 ? '!rounded-t-none' : ''}`}
+                                           buttonText={'remove'} onButtonPressed={() => console.log('remove pressed')}/>
                         </div>
                     </div>
                     {!loadingRequests && showRequests && pendingRequests?.map((request: Transaction) => (
