@@ -3,8 +3,7 @@ import {ApprovalStatus, Transaction} from "@models/transaction";
 import {useContext, useEffect, useState} from "react";
 import {ClientContext} from "@contexts/ClientContext";
 import IClient from "@models/client";
-import PrimaryButton from "@components/button/PrimaryButton";
-import SecondaryButton from "@components/button/SecondaryButton";
+import Button from "@components/button/Button";
 
 export type ChildPreviewProps = {
     child: ChildAccount;
@@ -86,9 +85,9 @@ expand_more
                         <div className={'ml-3'}>
                         </div>
                         <div className={'flex flex-col overflow-clip w-20'}>
-                            <PrimaryButton className={`!w-full !h-full -z-20 !rounded-b-none  !rounded-l-none ${pendingRequests.length > 0 ? '!rounded-t-none' : '!rounded-tr-lg'}`} buttonText={'add'}
+                            <Button className={`!w-full !h-full -z-20 !rounded-b-none  !rounded-l-none ${pendingRequests.length > 0 ? '!rounded-t-none' : '!rounded-tr-lg'}`} buttonText={'add'}
                                            onButtonPressed={() => console.log('add pressed')}/>
-                            <PrimaryButton className={`!bg-red-500 !w-full !h-full -z-20 !rounded-br-lg  !rounded-l-none !rounded-t-none ${pendingRequests.length > 0 ? '!rounded-t-none' : ''}`}
+                            <Button className={`!bg-red-500 !w-full !h-full -z-20 !rounded-br-lg  !rounded-l-none !rounded-t-none ${pendingRequests.length > 0 ? '!rounded-t-none' : ''}`}
                                            buttonText={'remove'} onButtonPressed={() => console.log('remove pressed')}/>
                         </div>
                     </div>
@@ -97,8 +96,8 @@ expand_more
                             <div data-testid={request._id}>Request ${request.amount}</div>
                             <div>Reason: {request.reason}</div>
                             <div className={'inline-flex'}>
-                                <PrimaryButton buttonText="Approve" onButtonPressed={() => onRequestApproval(request)}/>
-                                <SecondaryButton buttonText={"Deny"} className={"ml-4"} onButtonPressed={() => onRequestDenied(request)}/>
+                                <Button buttonText="Approve" onButtonPressed={() => onRequestApproval(request)}/>
+                                <Button variant={"secondary"} buttonText={"Deny"} className={"ml-4"} onButtonPressed={() => onRequestDenied(request)}/>
                             </div>
                         </div>
                     ))}

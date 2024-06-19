@@ -5,7 +5,7 @@ import {ChildAccount} from "@models/child-account";
 import {AuthContext} from "@contexts/AuthContext";
 import IClient from "@models/client";
 import {ChildPreview} from "./ChildPreview";
-import PrimaryButton from "@components/button/PrimaryButton";
+import Button from "@components/button/Button";
 
 export default function ParentDashboard() {
 	const [childAccounts, setChildAccounts] = useState<ChildAccount[]>([]);
@@ -47,7 +47,7 @@ export default function ParentDashboard() {
 						</div>
 					))}
 					<div className={"flex flex-row grid-flow-row gap-1"}>
-						<PrimaryButton buttonText="Create Child Account" onButtonPressed={() => setIsDialogOpen(true)}/>
+						<Button buttonText="Create Child Account" onButtonPressed={() => setIsDialogOpen(true)}/>
 					</div>
 				</div>
 			}

@@ -2,7 +2,7 @@
 import {useContext, useState} from "react";
 import {AuthContext} from "@contexts/AuthContext";
 import Input from "@components/Input";
-import PrimaryButton from "@components/button/PrimaryButton";
+import Button from "@components/button/Button";
 
 export default function Login() {
 	const [username, setUsername] = useState("");
@@ -39,7 +39,7 @@ export default function Login() {
 				/>
 			</div>
 			{loginFailed ? <div className={"text-red-500"}>Login Failed</div>:null}
-			<PrimaryButton className={"my-4"} buttonText="Login" onButtonPressed={login}/>
+			<Button className={"my-4"} buttonText="Login" onButtonPressed={login}/>
 		</div>
 	);
 }
