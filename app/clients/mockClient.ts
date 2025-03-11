@@ -24,7 +24,7 @@ export default class MockClient implements IClient {
     async auth(userData: LoginData): Promise<IUser | ChildAccount | null> {
         const user = mockUsers.find(user => user.username === userData.username && user.password === userData.password);
         const child = mockChildren.find(child => child.username === userData.username && child.password === userData.password);
-        return Promise.resolve({...user, ...child} as ChildAccount || null);
+        return Promise.resolve({...user, ...child} as ChildAccount);
     }
 
     //User CRUD

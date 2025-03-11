@@ -54,10 +54,10 @@ export const CreateChildAccountDialog: React.FC<CreateChildAccountDialogProps> =
         <Dialog open={isOpen} onClose={onRequestClose} as={'div'} className="relative z-50">
             <div className={'fixed inset-0 bg-white/30'}>
                 <div className={'fixed inset-0 flex w-screen items-center justify-center p-4'}>
-                    <Dialog.Panel className="mx-auto max-w-sm rounded bg-black p-4">
+                    <Dialog.Panel className="mx-auto max-w-sm rounded-sm bg-black p-4">
                         <Dialog.Title>Create Child Account</Dialog.Title>
                         <div>
-                            <div className="isolate -space-y-px rounded-md shadow-sm">
+                            <div className="isolate -space-y-px rounded-md shadow-xs">
                                 <LabelledInput
                                     name={"display-name"}
                                     label={"Display Name"}

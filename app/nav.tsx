@@ -21,7 +21,7 @@ export default function Nav() {
 				{navLinks.map((link) => (
 					<Link key={link.href} href={link.href} className={"mx-2"}>{link.text}</Link>
 				))}
-				<div className={"flex-grow"}/>
+				<div className={"grow"}/>
 				{user ? <Link key={"#"} href={"#"} onClick={logout}>Logout</Link> : null}
 			</div>
 		</div>

@@ -133,7 +133,7 @@ export default function ChildDashboard() {
                         <LabelledInput name='i-want-to-spend-this-money-because' className={"mx-1 mb-2"} label={"I want to spend this money because"} inputText={requestReason}
                                        onInputChanged={setRequestReason}
                                        placeholder={"I want a new toy"}/>
-                        <Button buttonText={'Request'} onButtonPressed={onRequestSubmit} className={'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'}/>
+                        <Button buttonText={'Request'} onButtonPressed={onRequestSubmit} className={'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-sm'}/>
                         {error && <p className={'text-rose-600'}>{error}</p>}
                     </div>
 
