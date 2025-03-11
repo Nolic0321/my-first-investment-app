@@ -79,8 +79,8 @@ export function ChildPreview({child}: ChildPreviewProps) {
                                 <div className={'flex items-center text-sm w-full h-full font-bold rounded-none rounded-tr-lg bg-transparent text-gray-900 cursor-pointer user-select:none'}
                                      onClick={() => setShowRequests(!showRequests)}>
                                     <span className={'mr-1'}>{pendingRequests.length} request{pendingRequests.length > 1 ? 's' : ''}</span>
-                                    {!showRequests && (<span className="material-symbols-outlined">^</span>)}
-                                    {showRequests && (<span className="material-symbols-outlined">v</span>)}
+                                    {!showRequests && (<span className={"material-symbols-outlined"}>stat_1</span>)}
+                                    {showRequests && (<span className={"material-symbols-outlined"}>stat_minus_1</span>)}
                                 </div>}
                         </div>
                         <div className={'ml-3'}>
