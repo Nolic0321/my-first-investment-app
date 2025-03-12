@@ -1,6 +1,7 @@
 import {IUser} from "@models/user";
 import {ChildAccount} from "@models/child-account";
-import {Collection, findById, updateOneById} from "@mongoDataApiHelper";
+import {Collection, findById, findOne, updateOneById} from "@mongoDataApiHelper";
+import {Balance} from "@models/balance";
 
 export const GET = async (req: Request, { params }: { params: { id: string } }) => {
     try {
@@ -11,6 +12,13 @@ export const GET = async (req: Request, { params }: { params: { id: string } }) 
                 statusText: 'User not found'
             });
         }
+
+        const latestBalance  = await findOne<Balance>(Collection.Balances,{
+            childId: childAccount.document._id,
+            $sort: {date: -1},
+        });
+        if(!latestBalance?.document) throw new Error("Failed to find child account");
+        childAccount.document.balance = latestBalance.document.balance;
         return Response.json(childAccount);
     } catch (error) {
         return new Response(null, {

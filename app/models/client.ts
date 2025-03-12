@@ -25,5 +25,6 @@ export default interface IClient {
     getPendingRequestsForParent(parentUserId: string, options?:Option): Promise<Transaction[]>;
     approveRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
     rejectRequest(transaction: Transaction, options?:Option): Promise<Transaction[]>;
+    adjustBalance(childUserId: string, adjustment: number, options?:Option): Promise<ChildAccount>;
 
 }

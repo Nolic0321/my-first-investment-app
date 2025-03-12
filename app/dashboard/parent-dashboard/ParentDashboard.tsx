@@ -37,7 +37,6 @@ export default function ParentDashboard() {
 	return (
 		<>
 			<div>Welcome to the parent dashboard</div>
-			<sub>More neat things to come soon!</sub>
 			{loadingChildAccounts && <div className={"flex flex-col"}>Loading child accounts...</div>}
 			{!loadingChildAccounts &&
 				<div className={"flex flex-col grid-flow-row gap-4 mt-4"}>
@@ -53,6 +52,12 @@ export default function ParentDashboard() {
 			}
 			<CreateChildAccountDialog isOpen={isDialogOpen} onRequestClose={() => setIsDialogOpen(false)}
 									  onCreateChildAccount={handleCreateChildAccount}/>
+			<section>
+				<div>This is a test</div>
+				<div><span className={'font-bold'}>THIS IS BOLD</span> however <span
+					className={'italic'}>this is italic</span><span className={"material-symbols-outlined"}>stat_1</span>
+				</div>
+			</section>
 		</>
 	);
 }

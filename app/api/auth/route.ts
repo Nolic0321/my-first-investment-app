@@ -52,7 +52,7 @@ export const POST = async (req: Request) => {
                 //Update the balance
                 const newBalance = await updateAndReturnNewBalance(latestBalance, childAccount.interest/100);
                 if(!newBalance.balance && newBalance.balance !== 0) throw new Error('Failed to update balance');
-                const insertResult = await insertOne<Balance>('balances',newBalance);
+                const insertResult = await insertOne<Balance>(Collection.Balances,newBalance);
                 if(!insertResult || !insertResult.insertedId) throw new Error('Failed to update balance');
 
                 const updatedAccount : ChildAccount = {...childAccount, balance: newBalance.balance};

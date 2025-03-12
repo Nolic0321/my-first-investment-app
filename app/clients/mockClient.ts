@@ -5,6 +5,7 @@ import {IUser} from "@models/user";
 import {ApprovalStatus, Transaction} from "@models/transaction";
 import {Option} from "@models/option";
 import {guid} from '../helper-functions';
+import Error from "next/error";
 
 
 export const mockChildren: ChildAccount[] = [
@@ -133,6 +134,22 @@ export default class MockClient implements IClient {
             if (child) resolve(child);
             else reject(new Error(`Child with id ${childUserId} not found`));
         });
+    }
+
+    adjustBalance(childUserId: string, adjustment: number, options?: Option): Promise<ChildAccount> {
+        return new Promise((resolve, reject) => {
+            if (options?.error) reject(new Error({
+                message: options.error,
+                statusCode: options.status
+            }));
+            const child = mockChildren.find(child => child._id === childUserId);
+            if (child) {
+                child.balance += adjustment;
+                resolve(child);
+            } else {
+                reject(new Error(`Child with id ${childUserId} not found`));
+            }
+        })
     }
 
 }

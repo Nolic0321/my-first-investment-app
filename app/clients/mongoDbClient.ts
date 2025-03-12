@@ -3,7 +3,7 @@ import {LoginData} from "@contexts/AuthContext";
 import {Option} from "@models/option";
 import {IUser} from "@models/user";
 import {ChildAccount} from "@models/child-account";
-import {Transaction} from "@models/transaction";
+import {ApprovalStatus, Transaction} from "@models/transaction";
 import {DeleteResponse, UpdateOneResponse} from "@mongoDataApiHelper";
 
 export default class MongoDbClient implements IClient {
@@ -120,6 +120,18 @@ export default class MongoDbClient implements IClient {
     rejectRequest(transaction: Transaction, options?: Option | undefined): Promise<Transaction[]> {
         const response = this.post<Transaction[]>(`/api/transactions/${transaction._id}/deny`, transaction);
         return response as Promise<Transaction[]>;
+    }
+
+    adjustBalance(childUserId: string, adjustment: number, options?: Option | undefined): Promise<ChildAccount> {
+        const transactionData: Transaction = {
+            amount: adjustment,
+            childId: childUserId,
+            approved: ApprovalStatus.Approved,
+            reason: 'Parent Balance Adjustment',
+            date: new Date()
+        }
+        const response = this.post<ChildAccount>(`/api/parent/${childUserId}/adjustment`, transactionData);
+        return response as Promise<ChildAccount>;
     }
 
     private async get<T>(url: string, body?: any, headers?: any):Promise<T | null> {

@@ -25,7 +25,7 @@ export default function Input({ inputText, onInputChanged, disabled, className, 
                 disabled={disabled}
                 type={type?type:"text"}
                 step={"0.01"}
-                className={` px-3 block w-full border-0 p-0 text-black placeholder:text-gray-400 focus-visible:outline-hidden sm:text-sm sm:leading-6 hover:bg-emerald-50 ${className || ''} ${headerDisplay?'pl-4':''}`}
+                className={` px-3 block w-full rounded-md  border-0 p-0 text-black placeholder:text-gray-400 focus-visible:outline-hidden sm:text-sm sm:leading-6 hover:bg-emerald-50 ${className || ''} ${headerDisplay?'pl-4':''}`}
                 value={inputText}
                 onChange={e => onInputChanged && onInputChanged(e.target.value)}
                 onBlur={e => onBlur && onBlur((e.target as HTMLInputElement).value)}
